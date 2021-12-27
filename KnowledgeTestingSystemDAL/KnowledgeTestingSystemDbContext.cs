@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KnowledgeTestingSystemDAL
 {
-    public class KnowledgeTestingSystemDbContext : DbContext, IKnowledgeTestingSystemDbContext
+    public class KnowledgeTestingSystemDbContext : DbContext 
     {
         public KnowledgeTestingSystemDbContext(DbContextOptions<KnowledgeTestingSystemDbContext> options) : base(options)
         {

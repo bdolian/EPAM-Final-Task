@@ -1,7 +1,9 @@
 ﻿using KnowledgeTestingSystemDAL.Entities;
 using KnowledgeTestingSystemDAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace KnowledgeTestingSystemDAL.Repositories
@@ -14,39 +16,44 @@ namespace KnowledgeTestingSystemDAL.Repositories
         {
             _knowledgeTestingSystemDbContext = knowledgeTestingSystemDbContext;
         }
-        public Task AddAsync(User entity)
+        public async Task AddAsync(User entity)
         {
-            throw new NotImplementedException();
-        }
+            if (entity == null)
+                throw new ArgumentNullException();
 
-        public User CreateAsync(User entity)
+            await _knowledgeTestingSystemDbContext.Users.AddAsync(entity);
+        }
+        public async Task DeleteByIdAsync(int id)
         {
-            throw new NotImplementedException();
-        }
+            var element = await _knowledgeTestingSystemDbContext.Users.FindAsync(id);
 
-        public bool DeleteAsync(User entity)
-        {
-            throw new NotImplementedException();
-        }
+            if (element == null)
+                throw new ArgumentNullException();
 
-        public Task DeleteByIdAsync(int id)
-        {
-            throw new NotImplementedException();
+            _knowledgeTestingSystemDbContext.Users.Remove(element);
+            await _knowledgeTestingSystemDbContext.SaveChangesAsync();
         }
-
         public IEnumerable<User> GetAll()
         {
-            throw new NotImplementedException();
+            return _knowledgeTestingSystemDbContext.Users.ToList();
         }
 
-        public Task<User> GetByIdAsync(int id)
+        public async Task<User> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var element = await _knowledgeTestingSystemDbContext.Users.FindAsync(id);
+
+            if (element == null)
+                throw new ArgumentNullException();
+
+            return element;
         }
 
-        public User UpdateAsync(User entity)
+        public async Task<User> UpdateAsync(User entity)
         {
-            throw new NotImplementedException();
+            var element = await _knowledgeTestingSystemDbContext.Users.FirstOrDefaultAsync(x => x.Id == entity.Id);
+            _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
+            await _knowledgeTestingSystemDbContext.SaveChangesAsync();
+            return element;
         }
     }
 }

@@ -1,5 +1,6 @@
 using KnowledgeTestingSystemDAL;
 using KnowledgeTestingSystemDAL.Interfaces;
+using KnowledgeTestingSystemDAL.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Builder;
@@ -27,8 +28,12 @@ namespace Knowledge_testing_system
                 .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
             services.AddControllers();
 
-            services.AddDbContext<IKnowledgeTestingSystemDbContext, KnowledgeTestingSystemDbContext>(options =>
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddDbContext<KnowledgeTestingSystemDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("KnowledgeTestingSystemDB")));
+
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,6 +42,9 @@ namespace Knowledge_testing_system
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();
