@@ -1,5 +1,4 @@
 ﻿using KnowledgeTestingSystemDAL.Entities;
-using KnowledgeTestingSystemDAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace KnowledgeTestingSystemDAL

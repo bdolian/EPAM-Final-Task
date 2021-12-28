@@ -1,3 +1,7 @@
+using KnowledgeTestingSystemBLL;
+using KnowledgeTestingSystemBLL.Entities;
+using KnowledgeTestingSystemBLL.Interfaces;
+using KnowledgeTestingSystemBLL.Services;
 using KnowledgeTestingSystemDAL;
 using KnowledgeTestingSystemDAL.Interfaces;
 using KnowledgeTestingSystemDAL.Repositories;
@@ -5,6 +9,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,9 +34,22 @@ namespace Knowledge_testing_system
             services.AddControllers();
 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddDbContext<KnowledgeTestingSystemDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("KnowledgeTestingSystemDB")));
+
+            services.AddDbContext<AdministrationDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("AdministrationDb")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+            }).AddEntityFrameworkStores<AdministrationDbContext>();
 
             services.AddSwaggerGen();
         }
