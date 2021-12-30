@@ -1,9 +1,10 @@
 ﻿using KnowledgeTestingSystem.Filters;
+using KnowledgeTestingSystem.Helpers;
 using KnowledgeTestingSystem.Models.Account;
-using KnowledgeTestingSystemBLL;
 using KnowledgeTestingSystemBLL.Entities;
 using KnowledgeTestingSystemBLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
 namespace KnowledgeTestingSystem.Controllers
@@ -14,10 +15,14 @@ namespace KnowledgeTestingSystem.Controllers
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
+        private readonly JwtSettings _jwtSettings;
         
-        public AccountController(IUserService userService)
+        public AccountController(IUserService userService, IOptionsSnapshot<JwtSettings> jwtSettings, IRoleService roleService)
         {
             _userService = userService;
+            _jwtSettings = jwtSettings.Value;
+            _roleService = roleService;
         }
 
         [HttpPost("register")]
@@ -45,7 +50,9 @@ namespace KnowledgeTestingSystem.Controllers
 
             if (user is null) return BadRequest();
 
-            return Ok();
+            var roles = await _roleService.GetRoles(user);
+
+            return Ok(JwtHelper.GenerateJwt(user, roles, _jwtSettings));
         }
 
     }

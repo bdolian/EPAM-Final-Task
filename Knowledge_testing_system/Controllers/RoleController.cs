@@ -1,7 +1,7 @@
 ﻿using KnowledgeTestingSystem.Models.Account;
 using KnowledgeTestingSystemBLL;
-using KnowledgeTestingSystemBLL.Entities;
 using KnowledgeTestingSystemBLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -9,6 +9,7 @@ namespace KnowledgeTestingSystem.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = "admin")]
     public class RoleController : Controller
     {
         private readonly IRoleService _roleService;
