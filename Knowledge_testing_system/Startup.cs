@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -29,6 +30,14 @@ namespace Knowledge_testing_system
     {
         public Startup(IConfiguration configuration)
         {
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(config)
+                .CreateLogger();
+
             Configuration = configuration;
         }
 
@@ -37,21 +46,24 @@ namespace Knowledge_testing_system
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+
             services.AddAuthentication(AzureADDefaults.BearerAuthenticationScheme)
                 .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
 
             services.AddControllers(options => 
             { 
-                options.Filters.Add<CustomExceptionFilterAttribute>(); 
+                options.Filters.Add<CustomExceptionFilterAttribute>();
+                options.Filters.Add<LoggerActionFilterAttribute>();
             });
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserRepository, UserRepository>();
-            //services.AddScoped<IOptionRepository, OptionRepository>(); 
-            //services.AddScoped<IQuestionRepository, QuestionRepository>();
-            //services.AddScoped<IQuestionOptionRepository, QuestionOptionRepository>();
-            //services.AddScoped<ITestRepository, TestRepository>();
-            //services.AddScoped<ITestQuestionRepository, TestQuestionRepository>();
+            services.AddScoped<IOptionRepository, OptionRepository>(); 
+            services.AddScoped<IQuestionRepository, QuestionRepository>();
+            services.AddScoped<IQuestionOptionRepository, QuestionOptionRepository>();
+            services.AddScoped<ITestRepository, TestRepository>();
+            services.AddScoped<ITestQuestionRepository, TestQuestionRepository>();
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();

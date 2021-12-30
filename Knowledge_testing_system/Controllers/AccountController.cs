@@ -18,7 +18,9 @@ namespace KnowledgeTestingSystem.Controllers
         private readonly IRoleService _roleService;
         private readonly JwtSettings _jwtSettings;
         
-        public AccountController(IUserService userService, IOptionsSnapshot<JwtSettings> jwtSettings, IRoleService roleService)
+        public AccountController(IUserService userService, 
+                                IOptionsSnapshot<JwtSettings> jwtSettings, 
+                                IRoleService roleService)
         {
             _userService = userService;
             _jwtSettings = jwtSettings.Value;
