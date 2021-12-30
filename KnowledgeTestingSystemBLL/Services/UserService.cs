@@ -1,5 +1,7 @@
 ﻿using KnowledgeTestingSystemBLL.Entities;
 using KnowledgeTestingSystemBLL.Interfaces;
+using KnowledgeTestingSystemDAL.Entities;
+using KnowledgeTestingSystemDAL.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,11 +15,13 @@ namespace KnowledgeTestingSystemBLL.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public UserService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _unitOfWork = unitOfWork;
         }
         public async Task AssignUserToRoles(AssignUserToRoles assignUserToRoles)
         {
@@ -29,7 +33,7 @@ namespace KnowledgeTestingSystemBLL.Services
 
             if (!result.Succeeded)
             {
-                throw new System.Exception(string.Join(';', result.Errors.Select(x => x.Description)));
+                throw new Exception(string.Join(';', result.Errors.Select(x => x.Description)));
             }
         }
 
@@ -39,7 +43,7 @@ namespace KnowledgeTestingSystemBLL.Services
 
             if (!result.Succeeded)
             {
-                throw new System.Exception($"Role could not be created: {roleName}.");
+                throw new Exception($"Role could not be created: {roleName}.");
             }
         }
 
@@ -75,6 +79,21 @@ namespace KnowledgeTestingSystemBLL.Services
             {
                 throw new Exception(string.Join(';', result.Errors.Select(x => x.Description)));
             }
+
+            var newUser = new User
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email
+            };
+
+            await _unitOfWork.UserRepository.AddAsync(newUser);
+
+            await _unitOfWork.UserProfileRepository.AddAsync(new UserProfile
+            {
+                UserId = newUser.Id,
+                DateOfBirth = DateTime.MinValue
+            });
         }
     }
 }

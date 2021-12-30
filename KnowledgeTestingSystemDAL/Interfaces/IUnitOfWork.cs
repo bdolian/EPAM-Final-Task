@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace KnowledgeTestingSystemDAL.Interfaces
+﻿namespace KnowledgeTestingSystemDAL.Interfaces
 {
     public interface IUnitOfWork
     {
@@ -10,7 +8,7 @@ namespace KnowledgeTestingSystemDAL.Interfaces
         IUserProfileRepository UserProfileRepository { get; }
         IUserRepository UserRepository { get; }
 
-        Task<int> SaveAsync();
+        void SaveAsync();
 
     }
 }

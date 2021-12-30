@@ -1,3 +1,4 @@
+using KnowledgeTestingSystem.Filters;
 using KnowledgeTestingSystemBLL;
 using KnowledgeTestingSystemBLL.Entities;
 using KnowledgeTestingSystemBLL.Interfaces;
@@ -31,9 +32,20 @@ namespace Knowledge_testing_system
         {
             services.AddAuthentication(AzureADDefaults.BearerAuthenticationScheme)
                 .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
-            services.AddControllers();
 
+            services.AddControllers(options => 
+            { 
+                options.Filters.Add<CustomExceptionFilterAttribute>(); 
+            });
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IOptionRepository, OptionRepository>();
+            services.AddScoped<IQuestionRepository, QuestionRepository>();
+            services.AddScoped<IQuestionOptionRepository, QuestionOptionRepository>();
+            services.AddScoped<ITestRepository, TestRepository>();
+            services.AddScoped<ITestQuestionRepository, TestQuestionRepository>();
+            services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             services.AddScoped<IUserService, UserService>();
 
             services.AddDbContext<KnowledgeTestingSystemDbContext>(options =>

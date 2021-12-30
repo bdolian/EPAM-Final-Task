@@ -1,8 +1,7 @@
-﻿using KnowledgeTestingSystem.Models.Account;
+﻿using KnowledgeTestingSystem.Filters;
+using KnowledgeTestingSystem.Models.Account;
 using KnowledgeTestingSystemBLL.Entities;
 using KnowledgeTestingSystemBLL.Interfaces;
-using KnowledgeTestingSystemDAL.Entities;
-using KnowledgeTestingSystemDAL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -10,6 +9,7 @@ namespace KnowledgeTestingSystem.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [ModelStateActionFilter]
     public class AccountController : Controller
     {
         private readonly IUserService _userService;

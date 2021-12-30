@@ -8,40 +8,40 @@ using System.Threading.Tasks;
 
 namespace KnowledgeTestingSystemDAL.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class TestQuestionRepository : ITestQuestionRepository
     {
         private readonly KnowledgeTestingSystemDbContext _knowledgeTestingSystemDbContext;
 
-        public UserRepository(KnowledgeTestingSystemDbContext knowledgeTestingSystemDbContext)
+        public TestQuestionRepository(KnowledgeTestingSystemDbContext knowledgeTestingSystemDbContext)
         {
             _knowledgeTestingSystemDbContext = knowledgeTestingSystemDbContext;
         }
-        public async Task AddAsync(User entity)
+        public async Task AddAsync(TestQuestion entity)
         {
             if (entity == null)
                 throw new ArgumentNullException();
 
-            await _knowledgeTestingSystemDbContext.Users.AddAsync(entity);
+            await _knowledgeTestingSystemDbContext.TestsQuestions.AddAsync(entity);
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
         }
         public async Task DeleteByIdAsync(int id)
         {
-            var element = await _knowledgeTestingSystemDbContext.Users.FindAsync(id);
+            var element = await _knowledgeTestingSystemDbContext.TestsQuestions.FindAsync(id);
 
             if (element == null)
                 throw new ArgumentNullException();
 
-            _knowledgeTestingSystemDbContext.Users.Remove(element);
+            _knowledgeTestingSystemDbContext.TestsQuestions.Remove(element);
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
         }
-        public IEnumerable<User> GetAll()
+        public IEnumerable<TestQuestion> GetAll()
         {
-            return _knowledgeTestingSystemDbContext.Users.ToList();
+            return _knowledgeTestingSystemDbContext.TestsQuestions.ToList();
         }
 
-        public async Task<User> GetByEmailAsync(string email)
+        public async Task<TestQuestion> GetByIdAsync(int id)
         {
-            var element = await _knowledgeTestingSystemDbContext.Users.FindAsync(email);
+            var element = await _knowledgeTestingSystemDbContext.TestsQuestions.FindAsync(id);
 
             if (element == null)
                 throw new ArgumentNullException();
@@ -49,19 +49,9 @@ namespace KnowledgeTestingSystemDAL.Repositories
             return element;
         }
 
-        public async Task<User> GetByIdAsync(int id)
+        public async Task<TestQuestion> UpdateAsync(TestQuestion entity)
         {
-            var element = await _knowledgeTestingSystemDbContext.Users.FindAsync(id);
-
-            if (element == null)
-                throw new ArgumentNullException();
-
-            return element;
-        }
-
-        public async Task<User> UpdateAsync(User entity)
-        {
-            var element = await _knowledgeTestingSystemDbContext.Users.FirstOrDefaultAsync(x => x.Id == entity.Id);
+            var element = await _knowledgeTestingSystemDbContext.TestsQuestions.FirstOrDefaultAsync(x => x.Id == entity.Id);
             _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
             return element;
