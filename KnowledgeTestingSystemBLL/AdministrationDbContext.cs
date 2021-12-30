@@ -19,8 +19,14 @@ namespace KnowledgeTestingSystemBLL
 
             builder.Entity<IdentityRole>().HasData(new[]
             {
-                new IdentityRole("user"),
+                new IdentityRole("user")
+                {
+                    NormalizedName = "USER"
+                },
                 new IdentityRole("admin")
+                {
+                    NormalizedName = "ADMIN"
+                }
             }); 
         }
     }
