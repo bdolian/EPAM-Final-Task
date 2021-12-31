@@ -3,8 +3,10 @@ using KnowledgeTestingSystem.Helpers;
 using KnowledgeTestingSystem.Models.Account;
 using KnowledgeTestingSystemBLL.Entities;
 using KnowledgeTestingSystemBLL.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System;
 using System.Threading.Tasks;
 
 namespace KnowledgeTestingSystem.Controllers
@@ -54,7 +56,15 @@ namespace KnowledgeTestingSystem.Controllers
 
             var roles = await _roleService.GetRoles(user);
 
-            return Ok(JwtHelper.GenerateJwt(user, roles, _jwtSettings));
+            var token = JwtHelper.GenerateJwt(user, roles, _jwtSettings);
+
+            HttpContext.Response.Cookies.Append(".AspNetCore.Application.Id", token,
+            new CookieOptions
+            {
+                MaxAge = TimeSpan.FromDays(30)
+            });
+
+            return Ok(token);
         }
 
     }

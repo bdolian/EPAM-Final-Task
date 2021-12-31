@@ -94,6 +94,10 @@ namespace Knowledge_testing_system
                     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
+                .AddCookie(options => {
+                    options.LoginPath = "/Account/logon/";
+                    options.AccessDeniedPath = "/Account/Forbidden/";
+                })
                 .AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;
@@ -149,6 +153,15 @@ namespace Knowledge_testing_system
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.Use(async (context, next) =>
+            {
+                var token = context.Request.Cookies[".AspNetCore.Application.Id"];
+                if (!string.IsNullOrEmpty(token))
+                    context.Request.Headers.Add("Authorization", "Bearer " + token);
+
+                await next();
+            });
 
             app.UseAuthentication();
             app.UseAuthorization();
