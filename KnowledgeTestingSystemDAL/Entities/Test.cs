@@ -7,6 +7,9 @@ namespace KnowledgeTestingSystemDAL.Entities
     {
         public int NumberOfQuestions { get; set; }
         public DateTime TimeToEnd { get; set; }
+
+        //NAVIGATION PROPERTIES
         public ICollection<UserProfileTest> UserProfiles { get; set; }
+        public ICollection<TestQuestion> Questions { get; set; }
     }
 }
