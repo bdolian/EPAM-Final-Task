@@ -42,7 +42,7 @@ namespace KnowledgeTestingSystemDAL
         {
             get
             {
-                if (_testRepository == null) { throw new NullReferenceException(); }
+                if (_testRepository == null) { _testRepository = new TestRepository(_database); }
                 return _testRepository;
             }
 

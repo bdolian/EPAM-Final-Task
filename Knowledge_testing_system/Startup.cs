@@ -67,6 +67,7 @@ namespace Knowledge_testing_system
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<ITestService, TestService>();
 
             services.AddDbContext<KnowledgeTestingSystemDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("KnowledgeTestingSystemDB")));

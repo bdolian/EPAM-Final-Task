@@ -16,10 +16,11 @@ namespace KnowledgeTestingSystem.Models.Account
         [Compare("Password", ErrorMessage = "Password doesn't match")]
         public string ConfirmPassword { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please enter your first name")]
+        [MaxLength(15)]
         public string FirstName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please enter your second name")]
         public string LastName { get; set; }
 
     }

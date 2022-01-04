@@ -31,20 +31,21 @@ namespace KnowledgeTestingSystemDAL.Repositories
             if (element == null)
                 throw new ArgumentNullException();
 
-            _knowledgeTestingSystemDbContext.Tests.Remove(element);
+            element.IsDeleted = true;
+            _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
         }
         public async Task<IEnumerable<Test>> GetAllAsync()
         {
-            return await _knowledgeTestingSystemDbContext.Tests.ToListAsync();
+            return await _knowledgeTestingSystemDbContext.Tests.Where(test => !test.IsDeleted).ToListAsync();
         }
 
         public async Task<Test> GetByIdAsync(int id)
         {
             var element = await _knowledgeTestingSystemDbContext.Tests.FindAsync(id);
 
-            if (element == null)
-                throw new ArgumentNullException();
+            if (element == null || element.IsDeleted)
+                throw new ArgumentException("There is no such test");
 
             return element;
         }
@@ -52,6 +53,10 @@ namespace KnowledgeTestingSystemDAL.Repositories
         public async Task<Test> UpdateAsync(Test entity)
         {
             var element = await _knowledgeTestingSystemDbContext.Tests.FirstOrDefaultAsync(x => x.Id == entity.Id);
+            element.TimeToEnd = entity.TimeToEnd;
+            element.NumberOfQuestions = entity.NumberOfQuestions;
+            element.Name = entity.Name;
+
             _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
             return element;

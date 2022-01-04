@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace KnowledgeTestingSystemDAL.Entities
+﻿namespace KnowledgeTestingSystemDAL.Entities
 {
     public class User : BaseEntity
     {
