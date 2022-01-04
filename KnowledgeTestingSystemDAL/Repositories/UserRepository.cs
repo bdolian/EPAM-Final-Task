@@ -34,9 +34,9 @@ namespace KnowledgeTestingSystemDAL.Repositories
             _knowledgeTestingSystemDbContext.Users.Remove(element);
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
         }
-        public IEnumerable<User> GetAll()
+        public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return _knowledgeTestingSystemDbContext.Users.ToList();
+            return await _knowledgeTestingSystemDbContext.Users.ToListAsync();
         }
 
         public async Task<User> GetByEmailAsync(string email)

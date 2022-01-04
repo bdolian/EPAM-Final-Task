@@ -34,9 +34,9 @@ namespace KnowledgeTestingSystemDAL.Repositories
             _knowledgeTestingSystemDbContext.Tests.Remove(element);
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
         }
-        public IEnumerable<Test> GetAll()
+        public async Task<IEnumerable<Test>> GetAllAsync()
         {
-            return _knowledgeTestingSystemDbContext.Tests.ToList();
+            return await _knowledgeTestingSystemDbContext.Tests.ToListAsync();
         }
 
         public async Task<Test> GetByIdAsync(int id)
