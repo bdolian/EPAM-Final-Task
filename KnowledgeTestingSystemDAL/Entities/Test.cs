@@ -11,6 +11,6 @@ namespace KnowledgeTestingSystemDAL.Entities
 
         //NAVIGATION PROPERTIES
         public ICollection<UserProfileTest> UserProfiles { get; set; }
-        public ICollection<TestQuestion> Questions { get; set; }
+        public ICollection<Question> Questions { get; set; }
     }
 }

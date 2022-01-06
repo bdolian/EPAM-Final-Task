@@ -5,9 +5,11 @@ namespace KnowledgeTestingSystemDAL.Entities
     public class Question : BaseEntity
     {
         public string Text { get; set; }
+        public int CorrectOptionId { get; set; }
+        public int TestId { get; set; }
 
         //NAVIGATION PROPERTIES
-        public ICollection<TestQuestion> Tests { get; set; }
-        public ICollection<QuestionOption> Options { get; set; }
+        public Test Test { get; set; }
+        public ICollection<Option> Options { get; set; }
     }
 }

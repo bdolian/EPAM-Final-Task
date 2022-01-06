@@ -5,8 +5,9 @@ namespace KnowledgeTestingSystemDAL.Entities
     public class Option : BaseEntity
     {
         public string Text { get; set; }
+        public int QuestionId { get; set; }
 
         //NAVIGATION PROPERTIES
-        public ICollection<QuestionOption> Questions { get; set; }
+        public Question Question { get; set; }
     }
 }

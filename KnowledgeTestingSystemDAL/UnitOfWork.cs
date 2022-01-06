@@ -13,8 +13,6 @@ namespace KnowledgeTestingSystemDAL
         private IUserProfileRepository _userProfileRepository;
         private IUserRepository _userRepository;
         private IUserProfileTestRepository _userProfileTestRepository;
-        private IQuestionOptionRepository _questionOptionRepository;
-        private ITestQuestionRepository _testQuestionRepository;
 
         public UnitOfWork(KnowledgeTestingSystemDbContext database)
         {
@@ -69,22 +67,6 @@ namespace KnowledgeTestingSystemDAL
             {
                 if (_userProfileTestRepository == null) { throw new NullReferenceException(); }
                 return _userProfileTestRepository;
-            }
-        }
-        public IQuestionOptionRepository QuestionOptionRepository
-        {
-            get
-            {
-                if (_questionOptionRepository == null) { throw new NullReferenceException(); }
-                return _questionOptionRepository;
-            }
-        }
-        public ITestQuestionRepository TestQuestionRepository
-        {
-            get
-            {
-                if (_testQuestionRepository == null) { throw new NullReferenceException(); }
-                return _testQuestionRepository;
             }
         }
 

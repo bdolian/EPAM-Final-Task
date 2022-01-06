@@ -14,8 +14,6 @@ namespace KnowledgeTestingSystemDAL
         public virtual DbSet<Test> Tests { get; set; }
         public virtual DbSet<Option> Options { get; set; }
         public virtual DbSet<Question> Questions { get; set; }
-        public virtual DbSet<QuestionOption> QuestionsOptions { get; set; }
-        public virtual DbSet<TestQuestion> TestsQuestions { get; set; }
         public virtual DbSet<UserProfileTest> UserProfilesTests { get; set; }
 
     }
