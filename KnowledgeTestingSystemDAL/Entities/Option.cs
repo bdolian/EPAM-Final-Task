@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace KnowledgeTestingSystemDAL.Entities
+﻿namespace KnowledgeTestingSystemDAL.Entities
 {
     public class Option : BaseEntity
     {

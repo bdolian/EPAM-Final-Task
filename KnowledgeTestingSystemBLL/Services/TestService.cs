@@ -74,6 +74,5 @@ namespace KnowledgeTestingSystemBLL.Services
 
             return users.Where(filter).ToList();
         }
-
     }
 }

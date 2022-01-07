@@ -1,11 +1,9 @@
 ﻿using KnowledgeTestingSystemBLL.Entities;
-using System.Threading.Tasks;
 
 namespace KnowledgeTestingSystemBLL.Interfaces
 {
-    public interface IUserService
+    public interface IUserService : IService<UserDTO>
     {
-        Task Register(Register user);
-        Task<ApplicationUser> Logon(Logon logonUser);
+
     }
 }

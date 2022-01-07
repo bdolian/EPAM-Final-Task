@@ -3,6 +3,7 @@ using KnowledgeTestingSystem.Helpers;
 using KnowledgeTestingSystem.Models.Account;
 using KnowledgeTestingSystemBLL.Entities;
 using KnowledgeTestingSystemBLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -16,15 +17,15 @@ namespace KnowledgeTestingSystem.Controllers
     [ModelStateActionFilter]
     public class AccountController : Controller
     {
-        private readonly IUserService _userService;
+        private readonly IAccountService _accountService;
         private readonly IRoleService _roleService;
         private readonly JwtSettings _jwtSettings;
         
-        public AccountController(IUserService userService, 
+        public AccountController(IAccountService accountService, 
                                 IOptionsSnapshot<JwtSettings> jwtSettings, 
                                 IRoleService roleService)
         {
-            _userService = userService;
+            _accountService = accountService;
             _jwtSettings = jwtSettings.Value;
             _roleService = roleService;
         }
@@ -32,7 +33,7 @@ namespace KnowledgeTestingSystem.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterModel model)
         {
-            await _userService.Register(new Register
+            await _accountService.Register(new Register
             {
                 Email = model.Email,
                 FirstName = model.FirstName,
@@ -46,7 +47,7 @@ namespace KnowledgeTestingSystem.Controllers
         [HttpPost("logon")]
         public async Task<IActionResult> Logon(LogonModel model)
         {
-            var user = await _userService.Logon(new Logon
+            var user = await _accountService.Logon(new Logon
             {
                 Email = model.Email,
                 Password = model.Password
@@ -61,10 +62,27 @@ namespace KnowledgeTestingSystem.Controllers
             HttpContext.Response.Cookies.Append(".AspNetCore.Application.Id", token,
             new CookieOptions
             {
-                MaxAge = TimeSpan.FromDays(30)
+                MaxAge = TimeSpan.FromDays(30),
+                SameSite = SameSiteMode.None,
+                Secure = true
             });
 
             return Ok(token);
+        }
+
+        [HttpPost("logout")]
+        [Authorize]
+        public IActionResult Logout()
+        {
+            HttpContext.Response.Cookies.Append(".AspNetCore.Application.Id", "",
+                new CookieOptions
+                {
+                    MaxAge = TimeSpan.FromMilliseconds(1),
+                    SameSite = SameSiteMode.None,
+                    Secure = true
+                });
+
+            return Ok();
         }
 
     }

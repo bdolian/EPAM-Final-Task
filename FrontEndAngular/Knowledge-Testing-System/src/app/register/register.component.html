@@ -1,11 +1,15 @@
-<form [formGroup]="form">
+<form [formGroup]="form" (submit)="submit()">
     <h1 class="h3 mb-3 fw-normal">Please register</h1>
 
-    <input formControlName="name" type="text" class="form-control" placeholder="Name" required autofocus>
+    <input formControlName="FirstName" type="text" class="form-control" placeholder="First Name" required>
 
-    <input formControlName="email" type="email" class="form-control" placeholder="name@example.com" required>
+    <input formControlName="LastName" type="text" class="form-control" placeholder="Last Name" required>
 
-    <input formControlName="password" type="password" class="form-control" placeholder="Password" required>
+    <input formControlName="Email" type="email" class="form-control" placeholder="name@example.com" required>
+
+    <input formControlName="Password" type="password" class="form-control" placeholder="Password" required>
+
+    <input formControlName="ConfirmPassword" type="password" class="form-control" placeholder="Confirm Password" required>
 
     <button class="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
 

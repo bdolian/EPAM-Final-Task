@@ -30,7 +30,8 @@ namespace KnowledgeTestingSystemDAL.Repositories
             if (element == null)
                 throw new ArgumentNullException();
 
-            _knowledgeTestingSystemDbContext.Users.Remove(element);
+            element.IsDeleted = true;
+            _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
         }
         public async Task<IEnumerable<User>> GetAllAsync()

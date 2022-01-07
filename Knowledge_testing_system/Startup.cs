@@ -48,6 +48,15 @@ namespace Knowledge_testing_system
         {
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                    builder.SetIsOriginAllowed(_ => true)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
+
             services.AddAuthentication(AzureADDefaults.BearerAuthenticationScheme)
                 .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
 
@@ -63,9 +72,10 @@ namespace Knowledge_testing_system
             services.AddScoped<IQuestionRepository, QuestionRepository>();
             services.AddScoped<ITestRepository, TestRepository>();
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ITestService, TestService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddDbContext<KnowledgeTestingSystemDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("KnowledgeTestingSystemDB")));
@@ -148,6 +158,8 @@ namespace Knowledge_testing_system
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors();
 
             app.UseHttpsRedirection();
 
