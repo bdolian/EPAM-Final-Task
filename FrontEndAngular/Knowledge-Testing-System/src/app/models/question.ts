@@ -1,9 +1,10 @@
 import { Option } from "./option";
 
-export interface Question {
+export class Question {
     id: number;
     text: string;
     correctOptionId: number;
     testId: number;
+    numberOfOptions: number;
     options: Option[];
   }

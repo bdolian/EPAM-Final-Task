@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Emitters } from '../emitters/emitters';
+import { Constants } from '../static-files/constants';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -10,22 +12,42 @@ import { Emitters } from '../emitters/emitters';
 export class HomeComponent implements OnInit {
   message = '';
 
+  TestsList: any;
+
+
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.http.get('https://localhost:44334/User/me', {withCredentials: true}).subscribe(
+    this.getTests();
+    this.http.get(Constants.APIPath + 'User/me', {withCredentials: true}).subscribe(
       (res: any) => {
-        console.log(res);
         this.message = `Hi ${res[0].email}`;
         Emitters.authEmitter.emit(true);
       },
-      err => {
-        this.message = "You are not logged in";
+      (err: any) => {
+        this.message = 'You are not logged in';
         Emitters.authEmitter.emit(false);
       }
     )
+  }
+
+  getTests(): void {
+    this.http.get(Constants.APIPath + 'Test/getTests', {withCredentials: true})
+    .subscribe(
+      res => { this.TestsList = res; console.log(res);
+      }
+    )
+  }
+
+  onSelectTest(test): void{
+    this.router.navigate(['/tests', test.id])
+  }
+
+  createTest(): void {
+    this.router.navigate(['/test/create'])
   }
 
 }

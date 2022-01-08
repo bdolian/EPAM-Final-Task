@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Constants } from '../static-files/constants';
 
 @Component({
   selector: 'app-register',
@@ -27,7 +28,7 @@ export class RegisterComponent implements OnInit {
   }
 
   submit(): void {
-    this.http.post('https://localhost:44334/Account/register', this.form.getRawValue(),
+    this.http.post(Constants.APIPath + 'Account/register', this.form.getRawValue(),
     {
       headers: new HttpHeaders({
            'Content-Type':  'application/json',

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Emitters } from '../emitters/emitters';
+import { Constants } from '../static-files/constants';
 
 @Component({
   selector: 'app-navigation',
@@ -21,7 +22,7 @@ export class NavigationComponent implements OnInit {
   }
 
   logout(): void {
-    this.http.post('https://localhost:44334/Account/logout', {}, {withCredentials: true})
+    this.http.post(Constants.APIPath + 'Account/logout', {}, {withCredentials: true})
     .subscribe(() => {
       this.authenticated = false;
     });

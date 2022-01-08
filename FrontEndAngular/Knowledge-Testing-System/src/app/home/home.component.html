@@ -1,1 +1,16 @@
-{{message}}
+<div class="col d-flex justify-content-center" *ngFor="let test of TestsList">
+    <div class="card w-75">
+        <div class="card-body">
+            <h5 class="card-title">{{test.name}}</h5>
+            <p class="card-text">Some test example</p>
+
+            <a (click)="onSelectTest(test)" class="btn btn-primary">Pass this test!</a>
+        </div>
+    </div>
+</div>
+
+<div class="col d-flex justify-content-center pt-3">
+    <div class="card w-10">
+        <a (click)="createTest()" class="btn btn-primary">Create new test</a>
+    </div>
+</div>

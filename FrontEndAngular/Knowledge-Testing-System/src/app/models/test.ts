@@ -1,7 +1,8 @@
 import { Question } from "./question";
 
-export interface Test {
+export class Test {
     id: number;
-    text: string;
+    name: string;
+    numberOfQuestions: number;
     questions: Question[];
   }

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Constants } from '../static-files/constants';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,7 @@ export class LoginComponent implements OnInit {
   }
 
   submit(): void{
-    this.http.post('https://localhost:44334/Account/logon', this.form.getRawValue(), {
+    this.http.post(Constants.APIPath + 'Account/logon', this.form.getRawValue(), {
       withCredentials: true,
       responseType: 'text' as 'json'
     }).subscribe(() => this.router.navigate(['/']));
