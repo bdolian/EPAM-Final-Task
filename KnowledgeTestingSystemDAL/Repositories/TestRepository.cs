@@ -31,6 +31,9 @@ namespace KnowledgeTestingSystemDAL.Repositories
             if (element == null)
                 throw new ArgumentNullException();
 
+            if (element.IsDeleted)
+                throw new ArgumentException("This test is already deleted(how did you get there?)");
+
             element.IsDeleted = true;
             _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
@@ -53,6 +56,10 @@ namespace KnowledgeTestingSystemDAL.Repositories
         public async Task<Test> UpdateAsync(Test entity)
         {
             var element = await _knowledgeTestingSystemDbContext.Tests.FirstOrDefaultAsync(x => x.Id == entity.Id);
+
+            if (element == null || element.IsDeleted)
+                throw new ArgumentException("There is no such test");
+
             element.TimeToEnd = entity.TimeToEnd;
             element.NumberOfQuestions = entity.NumberOfQuestions;
             element.Name = entity.Name;

@@ -7,6 +7,7 @@ namespace KnowledgeTestingSystemDAL.Entities
         public string Text { get; set; }
         public int CorrectOptionId { get; set; }
         public int TestId { get; set; }
+        public int NumberOfOptions { get; set; }
 
         //NAVIGATION PROPERTIES
         public Test Test { get; set; }

@@ -3,6 +3,7 @@ using KnowledgeTestingSystemDAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace KnowledgeTestingSystemDAL.Repositories
@@ -29,21 +30,24 @@ namespace KnowledgeTestingSystemDAL.Repositories
 
             if (element == null)
                 throw new ArgumentNullException();
+            if (element.IsDeleted)
+                throw new ArgumentException("This question is already deleted");
 
-            _knowledgeTestingSystemDbContext.Questions.Remove(element);
-            await _knowledgeTestingSystemDbContext.SaveChangesAsync();
+            element.IsDeleted = true;
+            _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
+            await _knowledgeTestingSystemDbContext.SaveChangesAsync();  
         }
         public async Task<IEnumerable<Question>> GetAllAsync()
         {
-            return await _knowledgeTestingSystemDbContext.Questions.ToListAsync();
+            return await _knowledgeTestingSystemDbContext.Questions.Where(question => !question.IsDeleted).ToListAsync();
         }
 
         public async Task<Question> GetByIdAsync(int id)
         {
             var element = await _knowledgeTestingSystemDbContext.Questions.FindAsync(id);
 
-            if (element == null)
-                throw new ArgumentNullException();
+            if (element == null || element.IsDeleted)
+                throw new ArgumentNullException("There is no such question");
 
             return element;
         }
@@ -51,6 +55,15 @@ namespace KnowledgeTestingSystemDAL.Repositories
         public async Task<Question> UpdateAsync(Question entity)
         {
             var element = await _knowledgeTestingSystemDbContext.Questions.FirstOrDefaultAsync(x => x.Id == entity.Id);
+
+            if (element == null || element.IsDeleted)
+                throw new ArgumentNullException("There is no such question");
+
+            element.Text = entity.Text;
+            element.CorrectOptionId = entity.CorrectOptionId;
+            element.TestId = entity.TestId;
+            element.NumberOfOptions = entity.NumberOfOptions;
+
             _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
             return element;

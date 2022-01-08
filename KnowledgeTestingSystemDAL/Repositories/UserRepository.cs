@@ -3,6 +3,7 @@ using KnowledgeTestingSystemDAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace KnowledgeTestingSystemDAL.Repositories
@@ -30,13 +31,17 @@ namespace KnowledgeTestingSystemDAL.Repositories
             if (element == null)
                 throw new ArgumentNullException();
 
+            if (element.IsDeleted)
+                throw new ArgumentException("This user is already deleted");
+
             element.IsDeleted = true;
             _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
         }
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await _knowledgeTestingSystemDbContext.Users.ToListAsync();
+            return await _knowledgeTestingSystemDbContext.Users
+                .Where(user => !user.IsDeleted).ToListAsync();
         }
 
         public async Task<User> GetByEmailAsync(string email)
@@ -53,8 +58,8 @@ namespace KnowledgeTestingSystemDAL.Repositories
         {
             var element = await _knowledgeTestingSystemDbContext.Users.FindAsync(id);
 
-            if (element == null)
-                throw new ArgumentNullException();
+            if (element == null || element.IsDeleted)
+                throw new ArgumentNullException("There is no such user");
 
             return element;
         }
@@ -62,6 +67,14 @@ namespace KnowledgeTestingSystemDAL.Repositories
         public async Task<User> UpdateAsync(User entity)
         {
             var element = await _knowledgeTestingSystemDbContext.Users.FirstOrDefaultAsync(x => x.Id == entity.Id);
+
+            if (element == null || element.IsDeleted)
+                throw new ArgumentException("There is no such user");
+
+            element.FirstName = entity.FirstName;
+            element.LastName = entity.LastName;
+            element.Email = entity.Email;
+
             _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
             return element;

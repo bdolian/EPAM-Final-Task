@@ -1,6 +1,5 @@
 ﻿using KnowledgeTestingSystemDAL.Interfaces;
 using KnowledgeTestingSystemDAL.Repositories;
-using System;
 
 namespace KnowledgeTestingSystemDAL
 {
@@ -23,7 +22,7 @@ namespace KnowledgeTestingSystemDAL
         {
             get
             {
-                if (_optionRepository == null) { throw new NullReferenceException(); }
+                if (_optionRepository == null) { _optionRepository = new OptionRepository(_database); }
                 return _optionRepository;
             }
         }
@@ -31,7 +30,7 @@ namespace KnowledgeTestingSystemDAL
         {
             get
             {
-                if (_questionRepository == null) { throw new NullReferenceException(); }
+                if (_questionRepository == null) { _questionRepository = new QuestionRepository(_database); }
                 return _questionRepository;
             }
 
@@ -65,7 +64,7 @@ namespace KnowledgeTestingSystemDAL
         {
             get
             {
-                if (_userProfileTestRepository == null) { throw new NullReferenceException(); }
+                if (_userProfileTestRepository == null) { _userProfileTestRepository = new UserProfileTestRepository(_database); }
                 return _userProfileTestRepository;
             }
         }

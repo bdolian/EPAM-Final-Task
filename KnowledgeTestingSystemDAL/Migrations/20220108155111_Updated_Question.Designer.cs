@@ -4,14 +4,16 @@ using KnowledgeTestingSystemDAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace KnowledgeTestingSystemDAL.Migrations
 {
     [DbContext(typeof(KnowledgeTestingSystemDbContext))]
-    partial class KnowledgeTestingSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220108155111_Updated_Question")]
+    partial class Updated_Question
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
