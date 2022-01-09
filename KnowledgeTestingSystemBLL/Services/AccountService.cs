@@ -13,11 +13,13 @@ namespace KnowledgeTestingSystemBLL.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserService _userService;
 
-        public AccountService(UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork)
+        public AccountService(UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork, IUserService userService)
         {
             _userManager = userManager;
             _unitOfWork = unitOfWork;
+            _userService = userService;
         }
 
         public async Task<ApplicationUser> Logon(Logon logonUser)
@@ -30,33 +32,30 @@ namespace KnowledgeTestingSystemBLL.Services
 
         public async Task Register(Register user)
         {
-            var result = await _userManager.CreateAsync(new ApplicationUser
+            var userToRegister = new ApplicationUser
             {
                 Email = user.Email,
                 UserName = user.Email,
                 FirstName = user.FirstName,
-                LastName = user.LastName
-            }, user.Password);
+                LastName = user.LastName,
+            };
+            var result = await _userManager.CreateAsync(userToRegister, user.Password);
 
             if (!result.Succeeded)
             {
                 throw new Exception(string.Join(';', result.Errors.Select(x => x.Description)));
             }
 
-            var newUser = new User
+            await _userManager.AddToRoleAsync(userToRegister, "user");
+
+            var newUser = new UserDTO
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email
             };
 
-            await _unitOfWork.UserRepository.AddAsync(newUser);
-
-            await _unitOfWork.UserProfileRepository.AddAsync(new UserProfile
-            {
-                UserId = newUser.Id,
-                DateOfBirth = DateTime.MinValue
-            });
+            await _userService.CreateAsync(newUser);
         }
     }
 }

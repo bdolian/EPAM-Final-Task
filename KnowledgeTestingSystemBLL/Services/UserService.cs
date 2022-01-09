@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KnowledgeTestingSystemBLL.Entities;
+using KnowledgeTestingSystemBLL.Entities.DTO;
 using KnowledgeTestingSystemBLL.Interfaces;
 using KnowledgeTestingSystemDAL.Entities;
 using KnowledgeTestingSystemDAL.Interfaces;
@@ -23,6 +24,8 @@ namespace KnowledgeTestingSystemBLL.Services
             {
                 cfg.CreateMap<User, UserDTO>();
                 cfg.CreateMap<UserDTO, User>();
+                cfg.CreateMap<UserProfile, UserProfileDTO>();
+                cfg.CreateMap<UserProfileTest, UserProfileTestDTO>();
             });
             _mapper = new Mapper(config);
         }
@@ -32,11 +35,20 @@ namespace KnowledgeTestingSystemBLL.Services
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            await _unitOfWork.UserRepository.AddAsync(new User
+            var user = new User
             {
                 FirstName = entity.FirstName,
                 LastName = entity.LastName,
                 Email = entity.Email
+            };
+
+            await _unitOfWork.UserRepository.AddAsync(user);
+
+            var createdUser = await _unitOfWork.UserRepository.GetByEmailAsync(user.Email);
+
+            await _unitOfWork.UserProfileRepository.AddAsync(new UserProfile
+            {
+                UserId = createdUser.Id
             });
         }
 
@@ -74,6 +86,28 @@ namespace KnowledgeTestingSystemBLL.Services
             var users = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(await _unitOfWork.UserRepository.GetAllAsync());
 
             return users.Where(filter).ToList();
+        }
+
+        public async Task<UserCompleteInformation> GetWithProfileAsync(int id)
+        {
+            
+            var user = _mapper.Map<User,UserDTO> (await _unitOfWork.UserRepository.GetByIdAsync(id));
+            var userProfile = _mapper.Map<UserProfile, UserProfileDTO>(await _unitOfWork.UserProfileRepository.GetByUserIdAsync(id));
+            UserProfileTestDTO userProfileTest = new UserProfileTestDTO();
+            try
+            {
+                userProfileTest = _mapper.Map<UserProfileTest, UserProfileTestDTO>(await _unitOfWork.UserProfileTestRepository.GetByUserIdAsync(id));
+            }
+            catch (Exception ex)
+            {
+            }
+            UserCompleteInformation userInfo = new UserCompleteInformation()
+            {
+                User = user,
+                UserProfile = userProfile,
+                UserProfileTest = userProfileTest,
+            };
+            return userInfo;
         }
     }
 }

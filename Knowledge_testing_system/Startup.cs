@@ -72,6 +72,7 @@ namespace Knowledge_testing_system
             services.AddScoped<IQuestionRepository, QuestionRepository>();
             services.AddScoped<ITestRepository, TestRepository>();
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+            services.AddScoped<IUserProfileTestRepository, UserProfileTestRepository>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ITestService, TestService>();

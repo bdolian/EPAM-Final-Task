@@ -67,7 +67,7 @@ namespace KnowledgeTestingSystem.Controllers
                 Secure = true
             });
 
-            return Ok(token);
+            return Ok();
         }
 
         [HttpPost("logout")]

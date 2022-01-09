@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KnowledgeTestingSystemBLL.Entities.DTO;
+using System;
 
 namespace KnowledgeTestingSystemBLL.Entities
 {
@@ -8,5 +9,6 @@ namespace KnowledgeTestingSystemBLL.Entities
         public string Name { get; set; }
         public int NumberOfQuestions { get; set; }
         public DateTime TimeToEnd { get; set; }
+        public QuestionDTO[] questions { get; set; } = null;
     }
 }

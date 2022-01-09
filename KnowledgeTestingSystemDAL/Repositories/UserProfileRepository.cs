@@ -53,6 +53,16 @@ namespace KnowledgeTestingSystemDAL.Repositories
             return element;
         }
 
+        public async Task<UserProfile> GetByUserIdAsync(int id)
+        {
+            var element = await _knowledgeTestingSystemDbContext.UserProfiles.Where(x => x.UserId == id).FirstOrDefaultAsync();
+
+            if (element == null || element.IsDeleted)
+                throw new ArgumentNullException("There is no such profile");
+
+            return element;
+        }
+
         public async Task<UserProfile> UpdateAsync(UserProfile entity)
         {
             var element = await _knowledgeTestingSystemDbContext.UserProfiles.FirstOrDefaultAsync(x => x.Id == entity.Id);

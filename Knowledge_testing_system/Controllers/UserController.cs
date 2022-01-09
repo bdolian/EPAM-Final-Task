@@ -1,8 +1,10 @@
 ﻿using KnowledgeTestingSystem.Models;
 using KnowledgeTestingSystemBLL.Entities;
 using KnowledgeTestingSystemBLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -26,12 +28,15 @@ namespace KnowledgeTestingSystem.Controllers
         }
 
         [HttpGet("me")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> GetMeAsync()
         {
             string email = User.FindFirst(ClaimTypes.Name)?.Value;
             var user = await _userService.GetAsync(x => x.Email == email);
 
-            return Ok(user);
+            var userInfo = await _userService.GetWithProfileAsync(user.First().Id);
+
+            return Ok(userInfo);
         }
 
         [HttpDelete("deleteUser")]

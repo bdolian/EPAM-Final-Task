@@ -23,9 +23,17 @@ namespace KnowledgeTestingSystem.Controllers
         }
         
         [HttpGet("getTests")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetTests()
         {
             return Ok(await _testService.GetAllAsync());
+        }
+
+        [HttpGet("getTestById")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetTestById(int id)
+        {
+            return Ok(await _testService.GetAsync(x => x.Id == id));
         }
 
         [HttpPost("createTest")]

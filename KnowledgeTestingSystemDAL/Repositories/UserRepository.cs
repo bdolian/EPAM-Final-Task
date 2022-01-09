@@ -46,7 +46,7 @@ namespace KnowledgeTestingSystemDAL.Repositories
 
         public async Task<User> GetByEmailAsync(string email)
         {
-            var element = await _knowledgeTestingSystemDbContext.Users.FindAsync(email);
+            var element = await _knowledgeTestingSystemDbContext.Users.Where(x => x.Email == email).FirstOrDefaultAsync();
 
             if (element == null)
                 throw new ArgumentNullException();

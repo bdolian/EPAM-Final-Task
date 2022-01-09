@@ -7,6 +7,7 @@
         ITestRepository TestRepository { get; }
         IUserProfileRepository UserProfileRepository { get; }
         IUserRepository UserRepository { get; }
+        IUserProfileTestRepository UserProfileTestRepository { get; }
 
         void SaveAsync();
 
