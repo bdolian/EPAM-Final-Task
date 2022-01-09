@@ -5,13 +5,15 @@ import { HomeComponent } from "./home/home.component";
 import { LoginComponent } from "./login/login.component";
 import { RegisterComponent } from "./register/register.component";
 import { TestsComponent } from "./tests/tests.component";
+import { UserProfileComponent } from "./user-profile/user-profile.component";
 
 const routes: Routes = [
     {path: '', component: HomeComponent},
     {path: 'register', component: RegisterComponent},
     {path: 'login', component: LoginComponent},
     {path: 'tests/:id', component: TestsComponent},
-    {path: 'test/create', component: CreateTestComponent}
+    {path: 'test/create', component: CreateTestComponent},
+    {path: 'me', component:UserProfileComponent}
 ];
 
 @NgModule({
@@ -25,5 +27,6 @@ export const routingComponents = [
     RegisterComponent,
     LoginComponent,
     TestsComponent,
-    CreateTestComponent
+    CreateTestComponent,
+    UserProfileComponent
 ]

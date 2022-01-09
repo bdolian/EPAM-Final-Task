@@ -26,6 +26,14 @@
             </form>
           </li>
           <li class="nav-item">
+            <a routerLink="/me" class="nav-link active" aria-current="page">
+              <picture>
+                <source srcset="../static-files/" type="image">
+                <img src='../static-files/UserProfile.png' class="img-fluid" width="30" height="30" alt="Profile">
+              </picture>
+            </a>
+          </li>
+          <li class="nav-item">
             <a routerLink="/login" class="nav-link active" aria-current="page" (click)="logout()">Logout</a>
           </li>
         </ul>

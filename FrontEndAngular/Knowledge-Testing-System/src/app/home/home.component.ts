@@ -10,10 +10,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  message = '';
-
+  
   TestsList: any;
-
 
   constructor(
     private http: HttpClient,
@@ -24,11 +22,11 @@ export class HomeComponent implements OnInit {
     this.getTests();
     this.http.get(Constants.APIPath + 'User/me', {withCredentials: true}).subscribe(
       (res: any) => {
-        this.message = `Hi ${res[0].email}`;
+        console.log(res);
         Emitters.authEmitter.emit(true);
       },
       (err: any) => {
-        this.message = 'You are not logged in';
+        console.log(err);
         Emitters.authEmitter.emit(false);
       }
     )
@@ -37,7 +35,8 @@ export class HomeComponent implements OnInit {
   getTests(): void {
     this.http.get(Constants.APIPath + 'Test/getTests', {withCredentials: true})
     .subscribe(
-      res => { this.TestsList = res; console.log(res);
+      res => { 
+        this.TestsList = res;
       }
     )
   }

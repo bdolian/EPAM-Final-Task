@@ -22,7 +22,7 @@ export class CreateTestComponent implements OnInit {
   }
 
   submit(): void {
-    console.log(this.form.controls);
+    console.log(this.form.getRawValue());
   }
 
   get Questions() {

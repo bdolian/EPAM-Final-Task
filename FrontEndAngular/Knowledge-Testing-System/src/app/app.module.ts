@@ -11,6 +11,8 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { CreateTestComponent } from './create-test/create-test.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { UserProfileEditComponent } from './user-profile-edit/user-profile-edit.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { CreateTestComponent } from './create-test/create-test.component';
     LoginComponent,
     HomeComponent,
     NavigationComponent,
-    CreateTestComponent
+    CreateTestComponent,
+    UserProfileComponent,
+    UserProfileEditComponent
   ],
   imports: [
     BrowserModule,
