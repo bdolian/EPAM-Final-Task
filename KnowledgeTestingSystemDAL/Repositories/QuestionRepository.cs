@@ -52,6 +52,16 @@ namespace KnowledgeTestingSystemDAL.Repositories
             return element;
         }
 
+        public async Task<IEnumerable<Question>> GetByTestIdAsync(int id)
+        {
+            var element = await _knowledgeTestingSystemDbContext.Questions.Where(x => x.TestId == id && !x.IsDeleted).ToListAsync();
+
+            if (element == null)
+                throw new ArgumentNullException("There is no such question");
+
+            return element;
+        }
+
         public async Task<Question> UpdateAsync(Question entity)
         {
             var element = await _knowledgeTestingSystemDbContext.Questions.FirstOrDefaultAsync(x => x.Id == entity.Id);
@@ -60,7 +70,6 @@ namespace KnowledgeTestingSystemDAL.Repositories
                 throw new ArgumentNullException("There is no such question");
 
             element.Text = entity.Text;
-            element.CorrectOptionId = entity.CorrectOptionId;
             element.TestId = entity.TestId;
             element.NumberOfOptions = entity.NumberOfOptions;
 

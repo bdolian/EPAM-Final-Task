@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KnowledgeTestingSystemBLL.Entities;
+using KnowledgeTestingSystemBLL.Entities.DTO;
 using KnowledgeTestingSystemBLL.Interfaces;
 using KnowledgeTestingSystemDAL.Entities;
 using KnowledgeTestingSystemDAL.Interfaces;
@@ -21,8 +22,9 @@ namespace KnowledgeTestingSystemBLL.Services
 
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Test, TestDTO>();
-                cfg.CreateMap<TestDTO, Test>();
+                cfg.CreateMap<Test, TestDTO>().ReverseMap();
+                cfg.CreateMap<QuestionDTO, Question>().ReverseMap();
+                cfg.CreateMap<OptionDTO, Option>().ReverseMap();
             });
             _mapper = new Mapper(config);
         }
@@ -31,12 +33,10 @@ namespace KnowledgeTestingSystemBLL.Services
             if(test == null)
                 throw new ArgumentNullException(nameof(test));
 
-            await _unitOfWork.TestRepository.AddAsync(new Test
-            {
-                Name = test.Name,
-                NumberOfQuestions = test.NumberOfQuestions,
-                TimeToEnd = test.TimeToEnd
-            });
+            var testToCreate = ParseTest(test);
+            await _unitOfWork.TestRepository.AddAsync(testToCreate);
+            Console.WriteLine(testToCreate.Id);
+
         }
 
         public async Task<bool> DeleteAsync(TestDTO test)
@@ -63,16 +63,42 @@ namespace KnowledgeTestingSystemBLL.Services
 
         public async Task<IEnumerable<TestDTO>> GetAllAsync()
         {
-            var users = _mapper.Map<IEnumerable<Test>, IEnumerable<TestDTO>>(await _unitOfWork.TestRepository.GetAllAsync());
+            var tests = _mapper.Map<IEnumerable<Test>, IEnumerable<TestDTO>>(await _unitOfWork.TestRepository.GetAllAsync());
 
-            return users;
+            return tests;
         }
 
         public async Task<IEnumerable<TestDTO>> GetAsync(Func<TestDTO, bool> filter)
         {
-            var users = _mapper.Map<IEnumerable<Test>, IEnumerable<TestDTO>>(await _unitOfWork.TestRepository.GetAllAsync());
+            var tests = _mapper.Map<IEnumerable<Test>, IEnumerable<TestDTO>>(await _unitOfWork.TestRepository.GetAllAsync());
 
-            return users.Where(filter).ToList();
+            return tests.Where(filter).ToList();
+        }
+
+        public async Task<TestDTO> GetByIdAsync(int id)
+        {
+            var test = _mapper.Map<Test, TestDTO>(await _unitOfWork.TestRepository.GetByIdAsync(id));
+            test.Questions = _mapper.Map<Question[], QuestionDTO[]>((await _unitOfWork.QuestionRepository.GetByTestIdAsync(id)).ToArray());
+            for(int i = 0; i < test.Questions.Length; i++)
+            {
+                test.Questions[i].Options = _mapper.Map<Option[],OptionDTO[]>(
+                    (await _unitOfWork.OptionRepository.GetByQuestionIdAsync(test.Questions[i].Id)).ToArray()
+                    );
+            }
+
+            return test;
+        }
+
+        private Test ParseTest(TestDTO test)
+        {
+            var testToCreate = _mapper.Map<TestDTO, Test>(test);
+            testToCreate.NumberOfQuestions = test.Questions.Length;
+            for (int i = 0; i < testToCreate.NumberOfQuestions; i++)
+            {
+                testToCreate.Questions.ElementAt(i).NumberOfOptions = testToCreate.Questions.ElementAt(i).Options.Count;
+            }
+
+            return testToCreate;
         }
     }
 }

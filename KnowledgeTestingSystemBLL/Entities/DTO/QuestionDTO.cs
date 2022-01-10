@@ -4,9 +4,8 @@
     {
         public int Id { get; set; }
         public string Text { get; set; }
-        public int CorrectOptionId { get; set; }
         public int TestId { get; set; }
         public int NumberOfOptions { get; set; } = 0;
-        public OptionDTO Options { get; set; } = null;
+        public OptionDTO[] Options { get; set; } = null;
     }
 }

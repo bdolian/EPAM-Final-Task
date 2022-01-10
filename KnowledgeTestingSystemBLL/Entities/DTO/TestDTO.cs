@@ -8,7 +8,7 @@ namespace KnowledgeTestingSystemBLL.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public int NumberOfQuestions { get; set; }
-        public DateTime TimeToEnd { get; set; }
-        public QuestionDTO[] questions { get; set; } = null;
+        public int TimeToEnd { get; set; }
+        public QuestionDTO[] Questions { get; set; } = null;
     }
 }

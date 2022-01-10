@@ -52,6 +52,15 @@ namespace KnowledgeTestingSystemDAL.Repositories
 
             return element;
         }
+        public async Task<IEnumerable<Option>> GetByQuestionIdAsync(int id)
+        {
+            var element = await _knowledgeTestingSystemDbContext.Options.Where(x => x.QuestionId == id && !x.IsDeleted).ToListAsync();
+
+            if (element == null)
+                throw new ArgumentNullException("There is no such option");
+
+            return element;
+        }
 
         public async Task<Option> UpdateAsync(Option entity)
         {

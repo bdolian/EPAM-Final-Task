@@ -6,7 +6,7 @@ namespace KnowledgeTestingSystemDAL.Entities
     public class Test : BaseEntity
     {
         public int NumberOfQuestions { get; set; }
-        public DateTime TimeToEnd { get; set; }
+        public int TimeToEnd { get; set; } //IN MINUTES
         public string Name { get; set; }
 
         //NAVIGATION PROPERTIES

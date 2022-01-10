@@ -10,12 +10,12 @@ namespace KnowledgeTestingSystem.Models
         [Required(ErrorMessage = "Please enter the name of the test")]
         [MaxLength(100)]
         public string Name { get; set; }
-
-        [Required(ErrorMessage = "Please enter number of questions")]
-        [Range(1, 15)]
         public int NumberOfQuestions { get; set; }
 
         [Required(ErrorMessage = "Please enter time required to pass the test")]
-        public DateTime TimeToEnd { get; set; }
+        public string TimeToEnd { get; set; }
+
+        [Required(ErrorMessage = "Please add at least 1 question")]
+        public QuestionModel[] Questions { get; set; }
     }
 }
