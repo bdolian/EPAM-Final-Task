@@ -7,6 +7,7 @@ using KnowledgeTestingSystemBLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace KnowledgeTestingSystem.Controllers
@@ -28,6 +29,8 @@ namespace KnowledgeTestingSystem.Controllers
                 cfg.CreateMap<OptionModel, OptionDTO>().ReverseMap();
                 cfg.CreateMap<QuestionModel, QuestionDTO>().ReverseMap();
                 cfg.CreateMap<TestModel, TestDTO>().ReverseMap();
+                cfg.CreateMap<PassedTestModel, PassedTest>().ReverseMap();
+                cfg.CreateMap<ResultModel, Result>().ReverseMap();
             });
             _mapper = new Mapper(config);
         }
@@ -80,6 +83,14 @@ namespace KnowledgeTestingSystem.Controllers
             return NoContent();
         }
 
+        [HttpPost("passTest")]
+        public async Task<IActionResult> PassTest(PassedTestModel test)
+        { 
+            var passedTest = ParsePassedTestModel(test);
+            var result = ParseToResultModel(await _testService.CheckTestAsync(passedTest));
+            return Ok(result);
+        }
+
         private TestDTO ParseTestToDTO(TestModel test)
         {
             var testToCreate = _mapper.Map<TestModel, TestDTO>(test);
@@ -91,6 +102,39 @@ namespace KnowledgeTestingSystem.Controllers
             testToCreate.TimeToEnd = int.Parse(test.TimeToEnd);
 
             return testToCreate;
+        }
+
+        private PassedTest ParsePassedTestModel(PassedTestModel model)
+        {
+            PassedTest test = new PassedTest();
+
+            test.TestId = model.TestId;
+            Dictionary<int, int> questionAnswerDict = new Dictionary<int, int>();
+            for(int i = 0; i < model.QuestionAnswers.Length; i++)
+            {
+                questionAnswerDict.Add(model.QuestionAnswers[i].QuestionId, model.QuestionAnswers[i].AnswerId);
+            }
+            test.QuestionAnswerKeyValue = questionAnswerDict;
+            return test;
+        }
+
+        private ResultModel ParseToResultModel(Result resultInfo)
+        {
+            ResultModel model = new ResultModel();
+            int i = 0;
+            model.TestId = resultInfo.TestId;
+            model.Grade = resultInfo.Grade;
+            model.QuestionAnswers = new QuestionAnswerModel[resultInfo.QuestionAnswerKeyValue.Count];
+
+            foreach(var item in resultInfo.QuestionAnswerKeyValue)
+            {
+                model.QuestionAnswers[i] = new QuestionAnswerModel();
+                model.QuestionAnswers[i].AnswerId = item.Value;
+                model.QuestionAnswers[i].QuestionId = item.Key;
+                i++;
+            }
+
+            return model;
         }
         
     }

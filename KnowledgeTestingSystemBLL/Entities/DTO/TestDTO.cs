@@ -1,5 +1,4 @@
 ﻿using KnowledgeTestingSystemBLL.Entities.DTO;
-using System;
 
 namespace KnowledgeTestingSystemBLL.Entities
 {

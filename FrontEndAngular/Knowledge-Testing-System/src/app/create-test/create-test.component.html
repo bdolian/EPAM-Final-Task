@@ -1,64 +1,76 @@
 <form [formGroup]="form">
-    <div class="form-group row">
-        <label for="inputName" class="col-sm-2 col-form-label">Name of the test</label>
-        <div class="col-sm-10">
-            <input formControlName="Name" type="text" class="form-control" id="inputName" placeholder="Name">
+    <div class="col-lg-8 col-centered">
+        <div class="form-group row">
+            <label for="inputName" class="col-sm-2 col-form-label">Name of the test</label>
+            <div class="col-sm-10">
+                <input formControlName="Name" type="text" class="form-control" id="inputName" placeholder="Name">
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        <label for="inputTimeToEnd" class="col-sm-2 col-form-label">Time to end(in minutes)</label>
-        <div class="col-sm-10">
-            <input formControlName="TimeToEnd" type="text" class="form-control" id="inputTimeToEnd"
-                placeholder="Minutes to end the test">
+        <div class="form-group row">
+            <label for="inputTimeToEnd" class="col-sm-2 col-form-label">Time to end(in minutes)</label>
+            <div class="col-sm-10">
+                <input formControlName="TimeToEnd" type="text" class="form-control" id="inputTimeToEnd"
+                    placeholder="Minutes to end the test">
+            </div>
         </div>
-    </div>
-    <fieldset class="form-group" [formGroup]="form">
-        <!--Question generator-->
-        <ng-container formArrayName="Questions">
-            <ng-container *ngFor="let question of Questions.controls; let i = index"
-                            [formGroupName]="i">
-                <div class="row">
-                    <legend class="col-form-label col-sm-2 pt-0">Question</legend>
-                    <div class="form-group row">
-                        <label for="inputQuestionText" class="col-sm-2 col-form-label">Question:</label>
-                        <div class="col-sm-10">
-                            <input formControlName="Text" type="text" class="form-control" id="inputQuestionText" placeholder="Your question">
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <button (click)="removeQuestion(i)" class="btn btn-primary w-25">Delete question</button>
-                    </div>
-                    <!--Add option-->
-                    <ng-container formArrayName="Options">
-                        <ng-container *ngFor="let option of getOptionsControls(i); let j = index"
-                                        [formGroupName]="j"> 
+        <fieldset class="form-group" [formGroup]="form">
+            <!--Question generator-->
+            <ng-container formArrayName="Questions">
+                <ng-container *ngFor="let question of Questions.controls; let i = index" [formGroupName]="i">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-2 pt-0">Question</legend>
+                        <div class="form-group row">
+                            <label for="inputQuestionText" class="col-sm-2 col-form-label">Question:</label>
                             <div class="col-sm-10">
-                                <div class="form-group row">
-                                    <label for="inputOptionText" class="col-sm-2 col-form-label">Option {{j + 1}}:</label>
-                                    <div class="col-sm-10">
-                                        <input formControlName="Text" type="text" class="form-control" id="inputOptionText" placeholder="Your option">
+                                <input formControlName="Text" type="text" class="form-control" id="inputQuestionText"
+                                    placeholder="Your question">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <button (click)="removeQuestion(i)" class="btn btn-primary w-25">Delete question</button>
+                        </div>
+                        <!--Add option-->
+                        <ng-container formArrayName="Options">
+                            <ng-container *ngFor="let option of getOptionsControls(i); let j = index"
+                                [formGroupName]="j">
+                                <div class="col-sm-10">
+                                    <div class="form-group row">
+                                        <label for="inputOptionText" class="col-sm-2 col-form-label">Option {{j +
+                                            1}}:</label>
+                                        <div class="col-sm-10">
+                                            <input formControlName="Text" type="text" class="form-control"
+                                                id="inputOptionText" placeholder="Your option">
+                                            <div>
+                                                <input formControlName="IsCorrect" class="form-check" type="radio"
+                                                    attr.name={{i}} id={{j}} value="true">
+                                                <label class="form-check-label">
+                                                    Mark as correct
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <button (click)="removeOption(i, j)" class="btn btn-primary w-25">Delete option</button>
-                            </div>
-                        </ng-container>  
-                    </ng-container>
-                    <div class="col-lg-6">
-                        <button (click)="addOption(i)" class="btn btn-primary w-25">Add option</button>
+                                <div class="col-lg-6">
+                                    <button (click)="removeOption(i, j)" class="btn btn-primary w-25">Delete
+                                        option</button>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                        <div class="col-lg-6">
+                            <button (click)="addOption(i)" class="btn btn-primary w-25">Add option</button>
+                        </div>
                     </div>
-                </div>
+                </ng-container>
             </ng-container>
-        </ng-container>
 
-    </fieldset>
-    <div class="form-group row justify-content-around">
-        <div class="col-lg-6">
-            <button (click)="addQuestion()" class="btn btn-primary w-25">Add question</button>
-        </div>
-        <div class="col-lg-6">
-            <button (click)="submit()"class="btn btn-primary w-25" type="submit">Submit</button>
+        </fieldset>
+        <div class="form-group row justify-content-around">
+            <div class="col-lg-6">
+                <button (click)="addQuestion()" class="btn btn-primary w-25">Add question</button>
+            </div>
+            <div class="col-lg-6">
+                <button (click)="submit()" class="btn btn-primary w-25" type="submit">Submit</button>
+            </div>
         </div>
     </div>
 </form>

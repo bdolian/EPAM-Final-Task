@@ -6,5 +6,6 @@ namespace KnowledgeTestingSystemBLL.Interfaces
     public interface ITestService : IService<TestDTO>
     {
         Task<TestDTO> GetByIdAsync(int id);
+        Task<Result> CheckTestAsync(PassedTest test);
     }
 }

@@ -35,11 +35,42 @@ namespace KnowledgeTestingSystemBLL.Services
 
             var testToCreate = ParseTest(test);
             await _unitOfWork.TestRepository.AddAsync(testToCreate);
-            Console.WriteLine(testToCreate.Id);
-
         }
 
-        public async Task<bool> DeleteAsync(TestDTO test)
+        public async Task<Result> CheckTestAsync(PassedTest test)
+        {
+            if (test == null)
+                throw new ArgumentNullException(nameof(test));
+
+            var testInfo = await _unitOfWork.TestRepository.GetByIdAsync(test.TestId);
+            testInfo.Questions = (await _unitOfWork.QuestionRepository.GetByTestIdAsync(test.TestId)).ToList();
+            foreach(var question in testInfo.Questions)
+            {
+                question.Options = (await _unitOfWork.OptionRepository.GetByQuestionIdAsync(question.Id)).ToList();
+            }
+            var correctAnswers = new Dictionary<int, int>();
+            for(int i = 0; i < testInfo.Questions.Count; i++)
+            {
+                for(int j = 0; j < testInfo.Questions.ElementAt(i).Options.Count; j++)
+                {
+                    if(testInfo.Questions.ElementAt(i).Options.ElementAt(j).IsCorrect)
+                        correctAnswers.Add(testInfo.Questions.ElementAt(i).Id, 
+                                           testInfo.Questions.ElementAt(i).Options.ElementAt(j).Id);
+                }
+            }
+            Result result = new Result();
+            foreach (var item in test.QuestionAnswerKeyValue)
+            {
+                if (item.Value == correctAnswers[item.Key])
+                    result.Grade++;
+            }
+            result.QuestionAnswerKeyValue = correctAnswers;
+            result.TestId = test.TestId;
+
+            return result;
+            
+        }
+            public async Task<bool> DeleteAsync(TestDTO test)
         {
             var testToDelete = await _unitOfWork.TestRepository.GetByIdAsync(test.Id);
 

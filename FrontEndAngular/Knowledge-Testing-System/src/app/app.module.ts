@@ -13,6 +13,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { CreateTestComponent } from './create-test/create-test.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserProfileEditComponent } from './user-profile-edit/user-profile-edit.component';
+import { TestResultComponent } from './test-result/test-result.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { UserProfileEditComponent } from './user-profile-edit/user-profile-edit.
     NavigationComponent,
     CreateTestComponent,
     UserProfileComponent,
-    UserProfileEditComponent
+    UserProfileEditComponent,
+    TestResultComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,4 @@
 ﻿using KnowledgeTestingSystemBLL.Entities;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace KnowledgeTestingSystemBLL.Interfaces

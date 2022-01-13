@@ -1,6 +1,5 @@
 ﻿using KnowledgeTestingSystemBLL.Entities;
 using KnowledgeTestingSystemBLL.Interfaces;
-using KnowledgeTestingSystemDAL.Entities;
 using KnowledgeTestingSystemDAL.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System;

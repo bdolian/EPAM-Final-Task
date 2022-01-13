@@ -1,1 +1,30 @@
-<h3>You selected {{Test.id}} test with name {{Test.name}}</h3>
+<div class="col-centered col-lg-8 offset-s2" formGroup="form">
+    <span>{{Test.name}}</span> <br>
+    <span>Time Elapsed</span>
+    <div *ngFor="let question of Test.questions; let i = index" class="form-group">
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">Question {{i+1}}</span>
+                <p>{{question.text}}</p>
+            </div>
+            <div class="card-action">
+                <ul class="collection answer">
+                    <ng-container *ngFor="let option of question.options;let j = index">
+                        <div>
+                            <input type="radio" name="flexRadioDefault{{question.id}}"
+                                id="flexRadioDefault{{option.id}}" (click)="addQuestionAnswer(question.id,option.id); disableButtons($event.target.name)">
+                            <label class="form-check-label" for="flexRadioDefault{{option.id}}">
+                                {{option.text}}
+                            </label>
+                        </div>
+                    </ng-container>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-around">
+        <div class="col-lg-6">
+            <button (click)="submit()" class="btn btn-primary w-25" type="submit">Submit</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+<div class="col-centered col-lg-8 offset-s2">
+    <h1>{{this.Test.name}}</h1>
+    <div class="col-lg-6">
+        <button (click)="markIncorrectAnswers(); markCorrectAnswers()" class="btn btn-primary w-25" type="submit">Know
+            the answers!</button>
+    </div>
+    <div *ngFor="let question of Test.questions; let i = index">
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">Question {{i+1}}</span>
+                <p>{{question.text}}</p>
+            </div>
+            <div class="card-action">
+                <ul class="collection answer">
+                    <ng-container *ngFor="let option of question.options; let j = index">
+                        <ng-container>
+                            <div id="option{{option.id}}">
+                                {{option.text}}
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div>
+        GRADE: {{Result.grade}} out of {{Test.numberOfQuestions}}
+    </div>
+
+</div>
