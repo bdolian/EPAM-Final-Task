@@ -13,7 +13,6 @@ export class TestResultComponent implements OnInit {
   public Test: Test;
   public Result: Result;
   public Answer: Result;
-  public isCorrect: number = 0; //Mark the non-chosen(0)\correct(1)\incorrect(2) answer
   constructor() { }
 
   ngOnInit(): void {

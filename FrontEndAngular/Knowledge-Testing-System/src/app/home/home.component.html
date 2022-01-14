@@ -1,15 +1,21 @@
-<div class="col d-flex justify-content-center" *ngFor="let test of TestsList">
-    <div class="card w-75">
+<div class="col d-flex justify-content-center" *ngFor="let test of TestsList; let i = index">
+    <div class="card w-75 m-3">
         <div class="card-body">
             <h5 class="card-title">{{test.name}}</h5>
             <p class="card-text">Some test example</p>
 
             <a (click)="onSelectTest(test)" class="btn btn-primary">Pass this test!</a>
+            <div class="justify-content-end" *ngIf="isAdmin">
+                <div class="mt-2">
+                    <a (click)="editTest(test.id, i)" class="btn btn-primary">Edit</a>
+                    <a (click)="deleteTest(test.id)" class="btn btn-primary">Delete</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="col d-flex justify-content-center pt-3">
+<div class="col d-flex justify-content-center pt-3" *ngIf="isAdmin">
     <div class="card w-10">
         <a (click)="createTest()" class="btn btn-primary">Create new test</a>
     </div>

@@ -40,15 +40,9 @@ namespace KnowledgeTestingSystem.Controllers
         }
 
         [HttpDelete("deleteUser")]
-        public async Task<IActionResult> DeleteUser(UserModel user)
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            var isDeleted = await _userService.DeleteAsync(new UserDTO
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email
-            });
+            var isDeleted = await _userService.DeleteAsync(id);
 
             if (!isDeleted)
                 throw new ArgumentException("You passed invalid user, it is not deleted");

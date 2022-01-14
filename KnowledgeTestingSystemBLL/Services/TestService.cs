@@ -70,14 +70,14 @@ namespace KnowledgeTestingSystemBLL.Services
             return result;
             
         }
-            public async Task<bool> DeleteAsync(TestDTO test)
-        {
-            var testToDelete = await _unitOfWork.TestRepository.GetByIdAsync(test.Id);
+        public async Task<bool> DeleteAsync(int id)
+        {  
+            var testToDelete = await _unitOfWork.TestRepository.GetByIdAsync(id);
 
             if (testToDelete == null)
                 return false;
 
-            await _unitOfWork.TestRepository.DeleteByIdAsync(test.Id);
+            await _unitOfWork.TestRepository.DeleteByIdAsync(id);
 
             return true;
         }
@@ -86,6 +86,14 @@ namespace KnowledgeTestingSystemBLL.Services
         {
             var mappedTest = _mapper.Map<TestDTO, Test>(test);
             await _unitOfWork.TestRepository.UpdateAsync(mappedTest);
+            foreach(var question in mappedTest.Questions)
+            {
+                await _unitOfWork.QuestionRepository.UpdateAsync(question);
+                foreach(var option in question.Options)
+                {
+                    await _unitOfWork.OptionRepository.UpdateAsync(option);
+                }
+            }
 
             var updatedTest = await _unitOfWork.TestRepository.GetByIdAsync(test.Id);
             var resultEntity = _mapper.Map<Test, TestDTO>(updatedTest);

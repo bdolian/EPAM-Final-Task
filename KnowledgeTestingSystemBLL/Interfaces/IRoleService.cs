@@ -9,7 +9,7 @@ namespace KnowledgeTestingSystemBLL.Interfaces
     {
         Task AssignUserToRoles(AssignUserToRoles assignUserToRoles);
         Task CreateRole(string roleName);
-        Task<IEnumerable<string>> GetRoles(ApplicationUser user);
+        Task<IEnumerable<string>> GetRoles(string email);
         Task<IEnumerable<IdentityRole>> GetRoles();
     }
 }

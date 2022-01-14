@@ -46,8 +46,9 @@ namespace KnowledgeTestingSystemBLL.Services
             return await _roleManager.Roles.ToListAsync();
         }
 
-        public async Task<IEnumerable<string>> GetRoles(ApplicationUser user)
+        public async Task<IEnumerable<string>> GetRoles(string email)
         {
+            var user = await _userManager.FindByEmailAsync(email);
             return (await _userManager.GetRolesAsync(user)).ToList();
         }
     }

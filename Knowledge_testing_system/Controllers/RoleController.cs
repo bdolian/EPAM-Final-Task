@@ -1,8 +1,10 @@
 ﻿using KnowledgeTestingSystem.Models.Account;
 using KnowledgeTestingSystemBLL;
+using KnowledgeTestingSystemBLL.Entities;
 using KnowledgeTestingSystemBLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace KnowledgeTestingSystem.Controllers
@@ -29,6 +31,14 @@ namespace KnowledgeTestingSystem.Controllers
         public async Task<IActionResult> GetRoles()
         {
             return Ok(await _roleService.GetRoles());
+        }
+
+        [HttpGet("getUserRoles")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUserRoles(string email)
+        {
+            var roles = await _roleService.GetRoles(email);
+            return Ok(roles);
         }
 
         [HttpPost("assignUserToRole")]

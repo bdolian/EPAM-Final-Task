@@ -75,4 +75,10 @@ export class CreateTestComponent implements OnInit {
   removeOption(questionIndex: number, index: number): void{
     this.getOptionsFormArray(questionIndex).removeAt(index);
   }
+
+  disableButtons(name: string): void {
+    document.getElementsByName(name).forEach(element => {
+      element.setAttribute("disabled","true");
+    });
+  }
 }

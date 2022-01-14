@@ -14,6 +14,7 @@ import { CreateTestComponent } from './create-test/create-test.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserProfileEditComponent } from './user-profile-edit/user-profile-edit.component';
 import { TestResultComponent } from './test-result/test-result.component';
+import { EditTestComponent } from './edit-test/edit-test.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { TestResultComponent } from './test-result/test-result.component';
     CreateTestComponent,
     UserProfileComponent,
     UserProfileEditComponent,
-    TestResultComponent
+    TestResultComponent,
+    EditTestComponent
   ],
   imports: [
     BrowserModule,

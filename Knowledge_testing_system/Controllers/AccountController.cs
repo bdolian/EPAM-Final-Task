@@ -55,7 +55,7 @@ namespace KnowledgeTestingSystem.Controllers
 
             if (user is null) return BadRequest();
 
-            var roles = await _roleService.GetRoles(user);
+            var roles = await _roleService.GetRoles(model.Email);
 
             var token = JwtHelper.GenerateJwt(user, roles, _jwtSettings);
 

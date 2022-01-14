@@ -52,14 +52,14 @@ namespace KnowledgeTestingSystemBLL.Services
             });
         }
 
-        public async Task<bool> DeleteAsync(UserDTO entity)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var userToDelete = await _unitOfWork.UserRepository.GetByIdAsync(entity.Id);
+            var userToDelete = await _unitOfWork.UserRepository.GetByIdAsync(id);
 
             if (userToDelete == null)
                 return false;
 
-            await _unitOfWork.UserRepository.DeleteByIdAsync(entity.Id);
+            await _unitOfWork.UserRepository.DeleteByIdAsync(id);
 
             return true;
         }

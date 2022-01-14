@@ -10,6 +10,6 @@ namespace KnowledgeTestingSystemBLL.Interfaces
         Task<IEnumerable<T>> GetAllAsync();
         Task<IEnumerable<T>> GetAsync(Func<T, bool> filter);
         Task<T> EditAsync(T entity);
-        Task<bool> DeleteAsync(T entity);
+        Task<bool> DeleteAsync(int id);
     }
 }

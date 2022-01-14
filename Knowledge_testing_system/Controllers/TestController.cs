@@ -59,10 +59,9 @@ namespace KnowledgeTestingSystem.Controllers
         }
 
         [HttpDelete("deleteTest")]
-        public async Task<IActionResult> DeleteTest(TestModel test)
+        public async Task<IActionResult> DeleteTest(int id)
         {
-            var testToDelete = _mapper.Map<TestModel, TestDTO>(test);
-            var isDeleted = await _testService.DeleteAsync(testToDelete);
+            var isDeleted = await _testService.DeleteAsync(id);
 
             if (!isDeleted)
                 throw new ArgumentException("You passed invalid test, it is not deleted");
@@ -76,7 +75,7 @@ namespace KnowledgeTestingSystem.Controllers
             if (newTest == null)
                 throw new ArgumentNullException(nameof(newTest));
 
-            var testToEdit = _mapper.Map<TestModel, TestDTO>(newTest);
+            var testToEdit = ParseTestToDTO(newTest);
 
             await _testService.EditAsync(testToEdit);
 
