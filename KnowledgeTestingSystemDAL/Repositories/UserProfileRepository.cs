@@ -38,6 +38,22 @@ namespace KnowledgeTestingSystemDAL.Repositories
             _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();     
         }
+
+        public async Task DeleteByUserIdAsync(int id)
+        {
+            var element = await _knowledgeTestingSystemDbContext.UserProfiles.Where(x => x.UserId == id).FirstOrDefaultAsync();
+
+            if (element == null)
+                throw new ArgumentNullException();
+
+            if (element.IsDeleted)
+                throw new ArgumentException("This user profile is already deleted");
+
+            element.IsDeleted = true;
+            _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
+            await _knowledgeTestingSystemDbContext.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<UserProfile>> GetAllAsync()
         {
             return await _knowledgeTestingSystemDbContext.UserProfiles.Where(userProfile => !userProfile.IsDeleted).ToListAsync();

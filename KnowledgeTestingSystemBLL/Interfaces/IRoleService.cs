@@ -1,5 +1,4 @@
-﻿using KnowledgeTestingSystemBLL.Entities;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

@@ -6,5 +6,6 @@ namespace KnowledgeTestingSystemBLL.Interfaces
     public interface IUserService : IService<UserDTO>
     {
         Task<UserCompleteInformation> GetWithProfileAsync(int id);
+        Task<UserCompleteInformation> EditCompleteAsync(UserCompleteInformation entity);
     }
 }

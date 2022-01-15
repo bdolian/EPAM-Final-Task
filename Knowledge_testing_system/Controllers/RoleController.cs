@@ -1,10 +1,7 @@
-﻿using KnowledgeTestingSystem.Models.Account;
-using KnowledgeTestingSystemBLL;
-using KnowledgeTestingSystemBLL.Entities;
+﻿using KnowledgeTestingSystemBLL;
 using KnowledgeTestingSystemBLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace KnowledgeTestingSystem.Controllers
@@ -42,13 +39,9 @@ namespace KnowledgeTestingSystem.Controllers
         }
 
         [HttpPost("assignUserToRole")]
-        public async Task<IActionResult> AssignUserToRole(AssignUserToRoleModel model)
+        public async Task<IActionResult> AssignUserToRole(AssignUserToRoles model)
         {
-            await _roleService.AssignUserToRoles(new AssignUserToRoles
-            {
-                Email = model.Email,
-                Roles = model.Roles
-            });
+            await _roleService.AssignUserToRoles(model);
 
             return Ok();
         }

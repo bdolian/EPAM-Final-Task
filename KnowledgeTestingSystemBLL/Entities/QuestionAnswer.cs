@@ -1,6 +1,6 @@
-﻿namespace KnowledgeTestingSystem.Models
+﻿namespace KnowledgeTestingSystemBLL.Entities
 {
-    public class QuestionAnswerModel
+    public class QuestionAnswer
     {
         public int QuestionId { get; set; }
         public int AnswerId { get; set; }

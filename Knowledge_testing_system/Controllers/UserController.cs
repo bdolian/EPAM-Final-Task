@@ -1,5 +1,4 @@
-﻿using KnowledgeTestingSystem.Models;
-using KnowledgeTestingSystemBLL.Entities;
+﻿using KnowledgeTestingSystemBLL.Entities;
 using KnowledgeTestingSystemBLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -51,18 +50,12 @@ namespace KnowledgeTestingSystem.Controllers
         }
 
         [HttpPut("editUser")]
-        public async Task<IActionResult> EditUser(UserModel newUser)
+        public async Task<IActionResult> EditUser(UserCompleteInformation newUser)
         {
             if (newUser == null)
                 throw new ArgumentNullException(nameof(newUser));
 
-            await _userService.EditAsync(new UserDTO
-            {
-                Id = newUser.Id,
-                FirstName = newUser.FirstName,
-                LastName = newUser.LastName,
-                Email = newUser.Email
-            });
+            await _userService.EditCompleteAsync(newUser);
 
             return NoContent();
         }

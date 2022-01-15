@@ -22,10 +22,9 @@ namespace KnowledgeTestingSystemBLL.Services
 
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<User, UserDTO>();
-                cfg.CreateMap<UserDTO, User>();
-                cfg.CreateMap<UserProfile, UserProfileDTO>();
-                cfg.CreateMap<UserProfileTest, UserProfileTestDTO>();
+                cfg.CreateMap<User, UserDTO>().ReverseMap();
+                cfg.CreateMap<UserProfile, UserProfileDTO>().ReverseMap();
+                cfg.CreateMap<UserProfileTest, UserProfileTestDTO>().ReverseMap();
             });
             _mapper = new Mapper(config);
         }
@@ -60,7 +59,9 @@ namespace KnowledgeTestingSystemBLL.Services
                 return false;
 
             await _unitOfWork.UserRepository.DeleteByIdAsync(id);
-
+            await _unitOfWork.UserProfileRepository.DeleteByUserIdAsync(id);
+            var profileId = (await _unitOfWork.UserProfileRepository.GetByUserIdAsync(id)).Id;
+            await _unitOfWork.UserProfileTestRepository.DeleteByUserProfileIdAsync(profileId);
             return true;
         }
 
@@ -71,6 +72,25 @@ namespace KnowledgeTestingSystemBLL.Services
 
             var updatedUser = await _unitOfWork.UserRepository.GetByIdAsync(entity.Id);
             var resultEntity = _mapper.Map<User, UserDTO>(updatedUser);
+            return resultEntity;
+        }
+
+        public async Task<UserCompleteInformation> EditCompleteAsync(UserCompleteInformation entity)
+        {
+            var mappedUser = _mapper.Map<UserDTO, User>(entity.User);
+            await _unitOfWork.UserRepository.UpdateAsync(mappedUser);
+
+            var mappedUserProfile = _mapper.Map<UserProfileDTO, UserProfile>(entity.UserProfile);
+            await _unitOfWork.UserProfileRepository.UpdateAsync(mappedUserProfile);
+
+            UserCompleteInformation resultEntity = new UserCompleteInformation();
+            var updatedUser = await _unitOfWork.UserRepository.GetByIdAsync(entity.User.Id);
+            resultEntity.User = _mapper.Map<User, UserDTO>(updatedUser);
+
+            var updatedUserProfile = await _unitOfWork.UserProfileRepository.GetByIdAsync(entity.UserProfile.Id);
+            resultEntity.UserProfile = _mapper.Map<UserProfile, UserProfileDTO>(updatedUserProfile);
+
+            resultEntity.UserProfileTest = entity.UserProfileTest;
             return resultEntity;
         }
 

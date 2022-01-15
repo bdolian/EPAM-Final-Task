@@ -59,9 +59,9 @@ namespace KnowledgeTestingSystemBLL.Services
                 }
             }
             Result result = new Result();
-            foreach (var item in test.QuestionAnswerKeyValue)
+            foreach (var item in test.QuestionAnswers)
             {
-                if (item.Value == correctAnswers[item.Key])
+                if (item.QuestionId == correctAnswers[item.QuestionId])
                     result.Grade++;
             }
             result.QuestionAnswerKeyValue = correctAnswers;

@@ -1,6 +1,5 @@
 ﻿using KnowledgeTestingSystem.Filters;
 using KnowledgeTestingSystem.Helpers;
-using KnowledgeTestingSystem.Models.Account;
 using KnowledgeTestingSystemBLL.Entities;
 using KnowledgeTestingSystemBLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -31,27 +30,17 @@ namespace KnowledgeTestingSystem.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterModel model)
+        public async Task<IActionResult> Register(Register model)
         {
-            await _accountService.Register(new Register
-            {
-                Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Password = model.Password,
-            });
+            await _accountService.Register(model);
 
             return Created(string.Empty, string.Empty);
         }
 
         [HttpPost("logon")]
-        public async Task<IActionResult> Logon(LogonModel model)
+        public async Task<IActionResult> Logon(Logon model)
         {
-            var user = await _accountService.Logon(new Logon
-            {
-                Email = model.Email,
-                Password = model.Password
-            });
+            var user = await _accountService.Logon(model);
 
             if (user is null) return BadRequest();
 
