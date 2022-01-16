@@ -6,6 +6,6 @@ namespace KnowledgeTestingSystemBLL.Entities
     {
         public int TestId { get; set; }
         public int Grade { get; set; }
-        public Dictionary<int, int> QuestionAnswerKeyValue { get; set; }
+        public QuestionAnswer[] QuestionAnswers { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using KnowledgeTestingSystemBLL.Entities;
+using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 
 namespace KnowledgeTestingSystemBLL.Interfaces
@@ -7,5 +8,6 @@ namespace KnowledgeTestingSystemBLL.Interfaces
     {
         Task Register(Register user);
         Task<ApplicationUser> Logon(Logon logonUser);
+        Task<IdentityResult> DeleteUser(ApplicationUser user);
     }
 }

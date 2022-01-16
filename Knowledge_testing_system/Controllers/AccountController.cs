@@ -32,18 +32,30 @@ namespace KnowledgeTestingSystem.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(Register model)
         {
-            await _accountService.Register(model);
-
-            return Created(string.Empty, string.Empty);
+            try
+            {
+                await _accountService.Register(model);
+                return Created(string.Empty, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpPost("logon")]
         public async Task<IActionResult> Logon(Logon model)
         {
-            var user = await _accountService.Logon(model);
-
-            if (user is null) return BadRequest();
-
+            ApplicationUser user = new ApplicationUser();
+            try
+            {
+                user = await _accountService.Logon(model);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             var roles = await _roleService.GetRoles(model.Email);
 
             var token = JwtHelper.GenerateJwt(user, roles, _jwtSettings);
@@ -55,7 +67,6 @@ namespace KnowledgeTestingSystem.Controllers
                 SameSite = SameSiteMode.None,
                 Secure = true
             });
-
             return Ok();
         }
 
@@ -70,7 +81,6 @@ namespace KnowledgeTestingSystem.Controllers
                     SameSite = SameSiteMode.None,
                     Secure = true
                 });
-
             return Ok();
         }
 

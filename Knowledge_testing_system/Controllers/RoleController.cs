@@ -42,7 +42,6 @@ namespace KnowledgeTestingSystem.Controllers
         public async Task<IActionResult> AssignUserToRole(AssignUserToRoles model)
         {
             await _roleService.AssignUserToRoles(model);
-
             return Ok();
         }
     }

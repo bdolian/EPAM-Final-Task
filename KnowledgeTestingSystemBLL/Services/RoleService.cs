@@ -21,6 +21,8 @@ namespace KnowledgeTestingSystemBLL.Services
 
         public async Task AssignUserToRoles(AssignUserToRoles assignUserToRoles)
         {
+            if(assignUserToRoles == null) throw new ArgumentNullException(nameof(assignUserToRoles));
+
             var user = _userManager.Users.SingleOrDefault(u => u.UserName == assignUserToRoles.Email);
             var roles = assignUserToRoles.Roles.ToList();
             var result = await _userManager.AddToRolesAsync(user, roles);
@@ -33,6 +35,8 @@ namespace KnowledgeTestingSystemBLL.Services
 
         public async Task CreateRole(string roleName)
         {
+            if (roleName is null) throw new ArgumentNullException(nameof(roleName));
+
             var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
 
             if (!result.Succeeded)
@@ -49,6 +53,8 @@ namespace KnowledgeTestingSystemBLL.Services
         public async Task<IEnumerable<string>> GetRoles(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) throw new Exception($"There is no such user: '{email}'");
+
             return (await _userManager.GetRolesAsync(user)).ToList();
         }
     }

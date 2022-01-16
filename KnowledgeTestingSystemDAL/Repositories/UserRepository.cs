@@ -18,22 +18,12 @@ namespace KnowledgeTestingSystemDAL.Repositories
         }
         public async Task AddAsync(User entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException();
-
             await _knowledgeTestingSystemDbContext.Users.AddAsync(entity);
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
         }
         public async Task DeleteByIdAsync(int id)
         {
             var element = await _knowledgeTestingSystemDbContext.Users.FindAsync(id);
-
-            if (element == null)
-                throw new ArgumentNullException();
-
-            if (element.IsDeleted)
-                throw new ArgumentException("This user is already deleted");
-
             element.IsDeleted = true;
             _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
@@ -46,30 +36,19 @@ namespace KnowledgeTestingSystemDAL.Repositories
 
         public async Task<User> GetByEmailAsync(string email)
         {
-            var element = await _knowledgeTestingSystemDbContext.Users.Where(x => x.Email == email).FirstOrDefaultAsync();
-
-            if (element == null)
-                throw new ArgumentNullException();
-
+            var element = await _knowledgeTestingSystemDbContext.Users.Where(x => x.Email == email && !x.IsDeleted).FirstOrDefaultAsync();
             return element;
         }
 
         public async Task<User> GetByIdAsync(int id)
         {
             var element = await _knowledgeTestingSystemDbContext.Users.FindAsync(id);
-
-            if (element == null || element.IsDeleted)
-                throw new ArgumentNullException("There is no such user");
-
             return element;
         }
 
         public async Task<User> UpdateAsync(User entity)
         {
             var element = await _knowledgeTestingSystemDbContext.Users.FirstOrDefaultAsync(x => x.Id == entity.Id);
-
-            if (element == null || element.IsDeleted)
-                throw new ArgumentException("There is no such user");
 
             element.FirstName = entity.FirstName;
             element.LastName = entity.LastName;

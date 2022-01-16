@@ -18,21 +18,12 @@ namespace KnowledgeTestingSystemDAL.Repositories
         }
         public async Task AddAsync(Test entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException();
-
             await _knowledgeTestingSystemDbContext.Tests.AddAsync(entity);
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
         }
         public async Task DeleteByIdAsync(int id)
         {
             var element = await _knowledgeTestingSystemDbContext.Tests.FindAsync(id);
-
-            if (element == null)
-                throw new ArgumentNullException();
-
-            if (element.IsDeleted)
-                throw new ArgumentException("This test is already deleted(how did you get there?)");
 
             element.IsDeleted = true;
             _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
@@ -45,20 +36,14 @@ namespace KnowledgeTestingSystemDAL.Repositories
 
         public async Task<Test> GetByIdAsync(int id)
         {
-            var element = await _knowledgeTestingSystemDbContext.Tests.FindAsync(id);
-
-            if (element == null || element.IsDeleted)
-                throw new ArgumentException("There is no such test");
+            var element = await _knowledgeTestingSystemDbContext.Tests.Where(x => x.Id == id && !x.IsDeleted).FirstOrDefaultAsync();
 
             return element;
         }
 
         public async Task<Test> UpdateAsync(Test entity)
         {
-            var element = await _knowledgeTestingSystemDbContext.Tests.FirstOrDefaultAsync(x => x.Id == entity.Id);
-
-            if (element == null || element.IsDeleted)
-                throw new ArgumentException("There is no such test");
+            var element = await _knowledgeTestingSystemDbContext.Tests.FirstOrDefaultAsync(x => x.Id == entity.Id && !x.IsDeleted);
 
             element.TimeToEnd = entity.TimeToEnd;
             element.NumberOfQuestions = entity.NumberOfQuestions;

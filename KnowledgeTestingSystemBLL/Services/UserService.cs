@@ -23,6 +23,7 @@ namespace KnowledgeTestingSystemBLL.Services
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<User, UserDTO>().ReverseMap();
+                cfg.CreateMap<User, ApplicationUser>().ReverseMap();
                 cfg.CreateMap<UserProfile, UserProfileDTO>().ReverseMap();
                 cfg.CreateMap<UserProfileTest, UserProfileTestDTO>().ReverseMap();
             });
@@ -34,12 +35,7 @@ namespace KnowledgeTestingSystemBLL.Services
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            var user = new User
-            {
-                FirstName = entity.FirstName,
-                LastName = entity.LastName,
-                Email = entity.Email
-            };
+            var user = _mapper.Map<UserDTO, User>(entity);
 
             await _unitOfWork.UserRepository.AddAsync(user);
 
@@ -56,17 +52,20 @@ namespace KnowledgeTestingSystemBLL.Services
             var userToDelete = await _unitOfWork.UserRepository.GetByIdAsync(id);
 
             if (userToDelete == null)
-                return false;
+                throw new ArgumentException("There is no such user");
 
             await _unitOfWork.UserRepository.DeleteByIdAsync(id);
-            await _unitOfWork.UserProfileRepository.DeleteByUserIdAsync(id);
             var profileId = (await _unitOfWork.UserProfileRepository.GetByUserIdAsync(id)).Id;
+            await _unitOfWork.UserProfileRepository.DeleteByUserIdAsync(id);
             await _unitOfWork.UserProfileTestRepository.DeleteByUserProfileIdAsync(profileId);
             return true;
         }
 
         public async Task<UserDTO> EditAsync(UserDTO entity)
         {
+            if (entity is null)
+                throw new ArgumentNullException(nameof(entity));
+
             var mappedUser = _mapper.Map<UserDTO, User>(entity);
             await _unitOfWork.UserRepository.UpdateAsync(mappedUser);
 
@@ -77,6 +76,9 @@ namespace KnowledgeTestingSystemBLL.Services
 
         public async Task<UserCompleteInformation> EditCompleteAsync(UserCompleteInformation entity)
         {
+            if(entity is null)
+                throw new ArgumentNullException(nameof(entity));
+
             var mappedUser = _mapper.Map<UserDTO, User>(entity.User);
             await _unitOfWork.UserRepository.UpdateAsync(mappedUser);
 
@@ -110,7 +112,6 @@ namespace KnowledgeTestingSystemBLL.Services
 
         public async Task<UserCompleteInformation> GetWithProfileAsync(int id)
         {
-            
             var user = _mapper.Map<User,UserDTO> (await _unitOfWork.UserRepository.GetByIdAsync(id));
             var userProfile = _mapper.Map<UserProfile, UserProfileDTO>(await _unitOfWork.UserProfileRepository.GetByUserIdAsync(id));
             UserProfileTestDTO userProfileTest = new UserProfileTestDTO();

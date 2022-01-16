@@ -18,21 +18,12 @@ namespace KnowledgeTestingSystemDAL.Repositories
         }
         public async Task AddAsync(UserProfile entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException();
-
             await _knowledgeTestingSystemDbContext.UserProfiles.AddAsync(entity);
             await _knowledgeTestingSystemDbContext.SaveChangesAsync();
         }
         public async Task DeleteByIdAsync(int id)
         {
             var element = await _knowledgeTestingSystemDbContext.UserProfiles.FindAsync(id);
-
-            if (element == null)
-                throw new ArgumentNullException();
-
-            if (element.IsDeleted)
-                throw new ArgumentException("This user profile is already deleted");
 
             element.IsDeleted = true;
             _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
@@ -42,12 +33,6 @@ namespace KnowledgeTestingSystemDAL.Repositories
         public async Task DeleteByUserIdAsync(int id)
         {
             var element = await _knowledgeTestingSystemDbContext.UserProfiles.Where(x => x.UserId == id).FirstOrDefaultAsync();
-
-            if (element == null)
-                throw new ArgumentNullException();
-
-            if (element.IsDeleted)
-                throw new ArgumentException("This user profile is already deleted");
 
             element.IsDeleted = true;
             _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;
@@ -63,9 +48,6 @@ namespace KnowledgeTestingSystemDAL.Repositories
         {
             var element = await _knowledgeTestingSystemDbContext.UserProfiles.FindAsync(id);
 
-            if (element == null || element.IsDeleted)
-                throw new ArgumentNullException("There is no such user profile");
-
             return element;
         }
 
@@ -73,18 +55,12 @@ namespace KnowledgeTestingSystemDAL.Repositories
         {
             var element = await _knowledgeTestingSystemDbContext.UserProfiles.Where(x => x.UserId == id).FirstOrDefaultAsync();
 
-            if (element == null || element.IsDeleted)
-                throw new ArgumentNullException("There is no such profile");
-
             return element;
         }
 
         public async Task<UserProfile> UpdateAsync(UserProfile entity)
         {
             var element = await _knowledgeTestingSystemDbContext.UserProfiles.FirstOrDefaultAsync(x => x.Id == entity.Id);
-
-            if (element == null || element.IsDeleted)
-                throw new ArgumentException("There is no such user profile");
 
             element.DateOfBirth = entity.DateOfBirth;
             element.UserId = entity.UserId;

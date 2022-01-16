@@ -48,23 +48,32 @@ namespace KnowledgeTestingSystemBLL.Services
             {
                 question.Options = (await _unitOfWork.OptionRepository.GetByQuestionIdAsync(question.Id)).ToList();
             }
-            var correctAnswers = new Dictionary<int, int>();
+            QuestionAnswer[] correctAnswers = new QuestionAnswer[testInfo.Questions.Count];
             for(int i = 0; i < testInfo.Questions.Count; i++)
             {
                 for(int j = 0; j < testInfo.Questions.ElementAt(i).Options.Count; j++)
                 {
-                    if(testInfo.Questions.ElementAt(i).Options.ElementAt(j).IsCorrect)
-                        correctAnswers.Add(testInfo.Questions.ElementAt(i).Id, 
-                                           testInfo.Questions.ElementAt(i).Options.ElementAt(j).Id);
+                    if (testInfo.Questions.ElementAt(i).Options.ElementAt(j).IsCorrect)
+                    {
+                        correctAnswers[i] = new QuestionAnswer();
+                        correctAnswers[i].QuestionId = testInfo.Questions.ElementAt(i).Id;
+                        correctAnswers[i].AnswerId = testInfo.Questions.ElementAt(i).Options.ElementAt(j).Id;
+                    }
                 }
             }
+            Array.Sort(test.QuestionAnswers, 
+                delegate(QuestionAnswer x, QuestionAnswer y) 
+                { 
+                    return x.QuestionId.CompareTo(y.QuestionId); 
+                });
+
             Result result = new Result();
-            foreach (var item in test.QuestionAnswers)
+            for(int i = 0; i < correctAnswers.Length; i++)
             {
-                if (item.QuestionId == correctAnswers[item.QuestionId])
+                if (test.QuestionAnswers[i].AnswerId == correctAnswers[i].AnswerId)
                     result.Grade++;
             }
-            result.QuestionAnswerKeyValue = correctAnswers;
+            result.QuestionAnswers = correctAnswers;
             result.TestId = test.TestId;
 
             return result;
@@ -84,6 +93,8 @@ namespace KnowledgeTestingSystemBLL.Services
 
         public async Task<TestDTO> EditAsync(TestDTO test)
         {
+            if (test is null) throw new ArgumentNullException(nameof(test));
+
             var mappedTest = _mapper.Map<TestDTO, Test>(test);
             await _unitOfWork.TestRepository.UpdateAsync(mappedTest);
             foreach(var question in mappedTest.Questions)
@@ -116,7 +127,10 @@ namespace KnowledgeTestingSystemBLL.Services
 
         public async Task<TestDTO> GetByIdAsync(int id)
         {
-            var test = _mapper.Map<Test, TestDTO>(await _unitOfWork.TestRepository.GetByIdAsync(id));
+            var dbTest = await _unitOfWork.TestRepository.GetByIdAsync(id);
+            if (dbTest == null) throw new Exception("There is no such test");
+
+            var test = _mapper.Map<Test, TestDTO>(dbTest);
             test.Questions = _mapper.Map<Question[], QuestionDTO[]>((await _unitOfWork.QuestionRepository.GetByTestIdAsync(id)).ToArray());
             for(int i = 0; i < test.Questions.Length; i++)
             {

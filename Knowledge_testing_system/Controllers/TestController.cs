@@ -11,7 +11,7 @@ namespace KnowledgeTestingSystem.Controllers
     [ApiController]
     [Route("[controller]")]
     [ModelStateActionFilter]
-    [Authorize(Roles = "user, admin")]
+    [Authorize(Roles = "admin")]
     public class TestController : Controller
     {
         private readonly ITestService _testService;
@@ -32,7 +32,15 @@ namespace KnowledgeTestingSystem.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetTestById(int id)
         {
-            return Ok(await _testService.GetByIdAsync(id));
+            try
+            {
+                return Ok(await _testService.GetByIdAsync(id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpPost("createTest")]
@@ -49,7 +57,7 @@ namespace KnowledgeTestingSystem.Controllers
             var isDeleted = await _testService.DeleteAsync(id);
 
             if (!isDeleted)
-                throw new ArgumentException("You passed invalid test, it is not deleted");
+                return BadRequest("You passed invalid test, it is not deleted");
 
             return Ok();
         }
@@ -57,18 +65,31 @@ namespace KnowledgeTestingSystem.Controllers
         [HttpPut("editTest")]
         public async Task<IActionResult> EditTest(TestDTO newTest)
         {
-            if (newTest == null)
-                throw new ArgumentNullException(nameof(newTest));
-
-            await _testService.EditAsync(newTest);
+            try
+            {
+                await _testService.EditAsync(newTest);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             return NoContent();
         }
 
         [HttpPost("passTest")]
+        [AllowAnonymous]
         public async Task<IActionResult> PassTest(PassedTest test)
-        { 
-            var result = await _testService.CheckTestAsync(test);
+        {
+            Result result = new Result();
+            try
+            {
+                result = await _testService.CheckTestAsync(test);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             return Ok(result);
         }
 
