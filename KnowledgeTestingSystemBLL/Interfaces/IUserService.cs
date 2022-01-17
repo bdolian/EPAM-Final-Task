@@ -7,5 +7,6 @@ namespace KnowledgeTestingSystemBLL.Interfaces
     {
         Task<UserCompleteInformation> GetWithProfileAsync(int id);
         Task<UserCompleteInformation> EditCompleteAsync(UserCompleteInformation entity);
+        Task AddUserProfileTest(Result result, string userEmail);
     }
 }

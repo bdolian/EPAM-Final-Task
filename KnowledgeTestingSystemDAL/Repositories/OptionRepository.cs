@@ -48,6 +48,7 @@ namespace KnowledgeTestingSystemDAL.Repositories
         {
             var element = await _knowledgeTestingSystemDbContext.Options.FirstOrDefaultAsync(x => x.Id == entity.Id);
             element.Text = entity.Text;
+            element.IsCorrect = entity.IsCorrect;
             element.QuestionId = entity.QuestionId;
 
             _knowledgeTestingSystemDbContext.Entry(element).State = EntityState.Modified;

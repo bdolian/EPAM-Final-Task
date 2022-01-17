@@ -34,15 +34,17 @@ namespace KnowledgeTestingSystemBLL.Services
                 throw new ArgumentNullException(nameof(test));
 
             var testToCreate = ParseTest(test);
+            testToCreate.TimeToEnd = int.Parse(test.TimeToEnd);
             await _unitOfWork.TestRepository.AddAsync(testToCreate);
         }
 
         public async Task<Result> CheckTestAsync(PassedTest test)
         {
-            if (test == null)
-                throw new ArgumentNullException(nameof(test));
+            if (test == null) throw new ArgumentNullException(nameof(test));
 
             var testInfo = await _unitOfWork.TestRepository.GetByIdAsync(test.TestId);
+            if (testInfo is null) throw new Exception("There is no such test");
+
             testInfo.Questions = (await _unitOfWork.QuestionRepository.GetByTestIdAsync(test.TestId)).ToList();
             foreach(var question in testInfo.Questions)
             {
@@ -77,7 +79,6 @@ namespace KnowledgeTestingSystemBLL.Services
             result.TestId = test.TestId;
 
             return result;
-            
         }
         public async Task<bool> DeleteAsync(int id)
         {  
@@ -86,6 +87,17 @@ namespace KnowledgeTestingSystemBLL.Services
             if (testToDelete == null)
                 return false;
 
+            testToDelete.Questions = (await _unitOfWork.QuestionRepository.GetByTestIdAsync(id)).ToList();
+
+            foreach(var question in testToDelete.Questions)
+            {
+                question.Options = (await _unitOfWork.OptionRepository.GetByQuestionIdAsync(question.Id)).ToList();
+                foreach(var option in question.Options)
+                {
+                    await _unitOfWork.OptionRepository.DeleteByIdAsync(option.Id);
+                }
+                await _unitOfWork.QuestionRepository.DeleteByIdAsync(question.Id);
+            }
             await _unitOfWork.TestRepository.DeleteByIdAsync(id);
 
             return true;
@@ -95,9 +107,9 @@ namespace KnowledgeTestingSystemBLL.Services
         {
             if (test is null) throw new ArgumentNullException(nameof(test));
 
-            var mappedTest = _mapper.Map<TestDTO, Test>(test);
-            await _unitOfWork.TestRepository.UpdateAsync(mappedTest);
-            foreach(var question in mappedTest.Questions)
+            var parsedTest = ParseTest(test);
+            await _unitOfWork.TestRepository.UpdateAsync(parsedTest);
+            foreach(var question in parsedTest.Questions)
             {
                 await _unitOfWork.QuestionRepository.UpdateAsync(question);
                 foreach(var option in question.Options)
@@ -146,9 +158,11 @@ namespace KnowledgeTestingSystemBLL.Services
         {
             var testToCreate = _mapper.Map<TestDTO, Test>(test);
             testToCreate.NumberOfQuestions = test.Questions.Length;
+            testToCreate.Questions = testToCreate.Questions.ToList();
             for (int i = 0; i < testToCreate.NumberOfQuestions; i++)
             {
                 testToCreate.Questions.ElementAt(i).NumberOfOptions = testToCreate.Questions.ElementAt(i).Options.Count;
+                testToCreate.Questions.ElementAt(i).Options = testToCreate.Questions.ElementAt(i).Options.ToList();
             }
 
             return testToCreate;

@@ -54,12 +54,12 @@ namespace KnowledgeTestingSystemDAL.Repositories
             return element;
         }
 
-        public async Task<UserProfileTest> GetByUserIdAsync(int id)
+        public async Task<IEnumerable<UserProfileTest>> GetByUserIdAsync(int id)
         {
             var element = await _knowledgeTestingSystemDbContext.UserProfiles.Where(x => x.UserId == id).FirstOrDefaultAsync();
 
             var userProfileTest = await _knowledgeTestingSystemDbContext.UserProfilesTests.Where(x => x.UserProfileId == element.Id)
-                                                                                          .FirstOrDefaultAsync();
+                                                                                          .ToListAsync();
 
             return userProfileTest;
         }
@@ -69,6 +69,7 @@ namespace KnowledgeTestingSystemDAL.Repositories
             var element = await _knowledgeTestingSystemDbContext.UserProfilesTests.FirstOrDefaultAsync(x => x.Id == entity.Id);
 
             element.NumberOfAttempts = entity.NumberOfAttempts;
+            element.IsDeleted = entity.IsDeleted;
             element.UserProfileId = entity.UserProfileId;
             element.Grade = entity.Grade;
             element.TestId = entity.TestId;

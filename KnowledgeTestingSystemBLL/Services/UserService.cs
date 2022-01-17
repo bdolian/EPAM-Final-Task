@@ -113,22 +113,50 @@ namespace KnowledgeTestingSystemBLL.Services
         public async Task<UserCompleteInformation> GetWithProfileAsync(int id)
         {
             var user = _mapper.Map<User,UserDTO> (await _unitOfWork.UserRepository.GetByIdAsync(id));
+            if(user is null) throw new ArgumentNullException(nameof(user));
+
             var userProfile = _mapper.Map<UserProfile, UserProfileDTO>(await _unitOfWork.UserProfileRepository.GetByUserIdAsync(id));
-            UserProfileTestDTO userProfileTest = new UserProfileTestDTO();
-            try
+            if(userProfile is null) throw new ArgumentNullException(nameof(userProfile));
+
+            var userProfilesTests = (await _unitOfWork.UserProfileTestRepository.GetByUserIdAsync(id)).ToArray();
+            UserProfileTestDTO[] userProfilesTestsDTO = new UserProfileTestDTO[userProfilesTests.Length];
+            for (int i = 0; i < userProfilesTests.Length; i++)
             {
-                userProfileTest = _mapper.Map<UserProfileTest, UserProfileTestDTO>(await _unitOfWork.UserProfileTestRepository.GetByUserIdAsync(id));
-            }
-            catch (Exception ex)
-            {
+                userProfilesTestsDTO[i] = _mapper.Map<UserProfileTest,UserProfileTestDTO>(userProfilesTests[i]);
             }
             UserCompleteInformation userInfo = new UserCompleteInformation()
             {
                 User = user,
                 UserProfile = userProfile,
-                UserProfileTest = userProfileTest,
+                UserProfileTest = userProfilesTestsDTO != null ? userProfilesTestsDTO : new UserProfileTestDTO[0]
             };
             return userInfo;
+        }
+
+        public async Task AddUserProfileTest(Result result, string userEmail)
+        {
+            var user = await GetAsync(x => x.Email == userEmail);
+            var userProfile = await _unitOfWork.UserProfileRepository.GetByUserIdAsync(user.ElementAt(0).Id);
+
+            var oldUserProfileTest = (await _unitOfWork.UserProfileTestRepository.GetByUserIdAsync(user.ElementAt(0).Id))
+                                     .Where(x => x.TestId == result.TestId);
+
+            if(oldUserProfileTest.Count() != 0)
+            {
+                oldUserProfileTest.ElementAt(0).Grade = result.Grade;
+                oldUserProfileTest.ElementAt(0).NumberOfAttempts++;
+                await _unitOfWork.UserProfileTestRepository.UpdateAsync(oldUserProfileTest.ElementAt(0));
+                return;
+            }
+
+            UserProfileTestDTO userProfileTest = new UserProfileTestDTO();
+            userProfileTest.UserProfileId = userProfile.Id;
+            userProfileTest.Grade = result.Grade;
+            userProfileTest.NumberOfAttempts = 1;
+            userProfileTest.TestId = result.TestId;
+            var userProfileTestToCreate = _mapper.Map<UserProfileTestDTO, UserProfileTest>(userProfileTest);
+
+            await _unitOfWork.UserProfileTestRepository.AddAsync(userProfileTestToCreate);
         }
     }
 }

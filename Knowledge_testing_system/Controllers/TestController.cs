@@ -4,6 +4,7 @@ using KnowledgeTestingSystemBLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace KnowledgeTestingSystem.Controllers
@@ -15,10 +16,12 @@ namespace KnowledgeTestingSystem.Controllers
     public class TestController : Controller
     {
         private readonly ITestService _testService;
+        private readonly IUserService _userService;
 
-        public TestController(ITestService testService)
+        public TestController(ITestService testService, IUserService userService)
         {
             _testService = testService;
+            _userService = userService;
         }
         
         [HttpGet("getTests")]
@@ -85,6 +88,8 @@ namespace KnowledgeTestingSystem.Controllers
             try
             {
                 result = await _testService.CheckTestAsync(test);
+                if(User.Identity.IsAuthenticated)
+                    await _userService.AddUserProfileTest(result, User.FindFirst(ClaimTypes.Name)?.Value); // Passing result and user email
             }
             catch(Exception ex)
             {

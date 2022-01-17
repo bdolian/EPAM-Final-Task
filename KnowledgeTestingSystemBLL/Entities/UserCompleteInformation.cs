@@ -6,6 +6,6 @@ namespace KnowledgeTestingSystemBLL.Entities
     {
         public UserDTO User { get; set; }
         public UserProfileDTO UserProfile { get; set; }
-        public UserProfileTestDTO UserProfileTest { get; set; } = null;
+        public UserProfileTestDTO[] UserProfileTest { get; set; } = null;
     }
 }
