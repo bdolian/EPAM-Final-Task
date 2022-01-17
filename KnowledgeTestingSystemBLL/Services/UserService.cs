@@ -30,6 +30,12 @@ namespace KnowledgeTestingSystemBLL.Services
             _mapper = new Mapper(config);
         }
 
+        /// <summary>
+        /// This method creates the user and its profile in application DB
+        /// </summary>
+        /// <param name="entity">User to create</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">User is null</exception>
         public async Task CreateAsync(UserDTO entity)
         {
             if (entity == null)
@@ -47,6 +53,12 @@ namespace KnowledgeTestingSystemBLL.Services
             });
         }
 
+        /// <summary>
+        /// This method deletes all information about the user(UserProfile, UserProfileTests and User itself) 
+        /// </summary>
+        /// <param name="id">Id of user to delete</param>
+        /// <returns>True if everything is fine</returns>
+        /// <exception cref="ArgumentException">There is no such user or it's deleted</exception>
         public async Task<bool> DeleteAsync(int id)
         {
             var userToDelete = await _unitOfWork.UserRepository.GetByIdAsync(id);
@@ -61,6 +73,12 @@ namespace KnowledgeTestingSystemBLL.Services
             return true;
         }
 
+        /// <summary>
+        /// This method edits information about only the User
+        /// </summary>
+        /// <param name="entity">New User information</param>
+        /// <returns>Edited user</returns>
+        /// <exception cref="ArgumentNullException">Passed model is null</exception>
         public async Task<UserDTO> EditAsync(UserDTO entity)
         {
             if (entity is null)
@@ -73,7 +91,12 @@ namespace KnowledgeTestingSystemBLL.Services
             var resultEntity = _mapper.Map<User, UserDTO>(updatedUser);
             return resultEntity;
         }
-
+        /// <summary>
+        /// This method edits all user information(User and UserProfile)
+        /// </summary>
+        /// <param name="entity">Information to edit</param>
+        /// <returns>Edited complete user information</returns>
+        /// <exception cref="ArgumentNullException">Passed info is null</exception>
         public async Task<UserCompleteInformation> EditCompleteAsync(UserCompleteInformation entity)
         {
             if(entity is null)
@@ -103,6 +126,11 @@ namespace KnowledgeTestingSystemBLL.Services
             return users;
         }
 
+        /// <summary>
+        /// This method gets all users that corresponds the filter(some condition)
+        /// </summary>
+        /// <param name="filter">Condition for users</param>
+        /// <returns>List of users that corresponds the filter</returns>
         public async Task<IEnumerable<UserDTO>> GetAsync(Func<UserDTO, bool> filter)
         {
             var users = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(await _unitOfWork.UserRepository.GetAllAsync());
@@ -110,6 +138,12 @@ namespace KnowledgeTestingSystemBLL.Services
             return users.Where(filter).ToList();
         }
 
+        /// <summary>
+        /// This method returns complete user information
+        /// </summary>
+        /// <param name="id">Id of user to find</param>
+        /// <returns>Complete user information</returns>
+        /// <exception cref="ArgumentNullException">User not found or is deleted</exception>
         public async Task<UserCompleteInformation> GetWithProfileAsync(int id)
         {
             var user = _mapper.Map<User,UserDTO> (await _unitOfWork.UserRepository.GetByIdAsync(id));
@@ -133,6 +167,12 @@ namespace KnowledgeTestingSystemBLL.Services
             return userInfo;
         }
 
+        /// <summary>
+        /// This method adds new entity of UserProfileTest after the user passed the test
+        /// </summary>
+        /// <param name="result">Result of the test</param>
+        /// <param name="userEmail">Email of user that passed it</param>
+        /// <returns></returns>
         public async Task AddUserProfileTest(Result result, string userEmail)
         {
             var user = await GetAsync(x => x.Email == userEmail);

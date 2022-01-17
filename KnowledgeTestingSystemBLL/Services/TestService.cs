@@ -28,6 +28,12 @@ namespace KnowledgeTestingSystemBLL.Services
             });
             _mapper = new Mapper(config);
         }
+        /// <summary>
+        /// This method parses the test using this.ParseTest() method and adds it into a DB 
+        /// </summary>
+        /// <param name="test">Test to create model</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Model is null</exception>
         public async Task CreateAsync(TestDTO test)
         {
             if(test == null)
@@ -38,6 +44,14 @@ namespace KnowledgeTestingSystemBLL.Services
             await _unitOfWork.TestRepository.AddAsync(testToCreate);
         }
 
+        /// <summary>
+        /// This method checks the test that user has passed. Firstly it gets all test info from DB by test id, 
+        /// then compare correct answers with the given ones.
+        /// </summary>
+        /// <param name="test">Passed test model</param>
+        /// <returns>Result model (grade and correct answers)</returns>
+        /// <exception cref="ArgumentNullException">Model is null</exception>
+        /// <exception cref="Exception">There is no such test</exception>
         public async Task<Result> CheckTestAsync(PassedTest test)
         {
             if (test == null) throw new ArgumentNullException(nameof(test));
@@ -57,9 +71,11 @@ namespace KnowledgeTestingSystemBLL.Services
                 {
                     if (testInfo.Questions.ElementAt(i).Options.ElementAt(j).IsCorrect)
                     {
-                        correctAnswers[i] = new QuestionAnswer();
-                        correctAnswers[i].QuestionId = testInfo.Questions.ElementAt(i).Id;
-                        correctAnswers[i].AnswerId = testInfo.Questions.ElementAt(i).Options.ElementAt(j).Id;
+                        correctAnswers[i] = new QuestionAnswer
+                        {
+                            QuestionId = testInfo.Questions.ElementAt(i).Id,
+                            AnswerId = testInfo.Questions.ElementAt(i).Options.ElementAt(j).Id
+                        };
                     }
                 }
             }
@@ -80,6 +96,12 @@ namespace KnowledgeTestingSystemBLL.Services
 
             return result;
         }
+
+        /// <summary>
+        /// This method deletes all test information(Firstly all options, then all questions, then the test itself)
+        /// </summary>
+        /// <param name="id">Test id</param>
+        /// <returns>True if everything is fine, false otherwise</returns>
         public async Task<bool> DeleteAsync(int id)
         {  
             var testToDelete = await _unitOfWork.TestRepository.GetByIdAsync(id);
@@ -103,6 +125,12 @@ namespace KnowledgeTestingSystemBLL.Services
             return true;
         }
 
+        /// <summary>
+        /// This method edits the test based on passed model
+        /// </summary>
+        /// <param name="test">New test model</param>
+        /// <returns>New test</returns>
+        /// <exception cref="ArgumentNullException">Model is null</exception>
         public async Task<TestDTO> EditAsync(TestDTO test)
         {
             if (test is null) throw new ArgumentNullException(nameof(test));
@@ -130,6 +158,11 @@ namespace KnowledgeTestingSystemBLL.Services
             return tests;
         }
 
+        /// <summary>
+        /// This method returns all elements based on the filter(some condition)
+        /// </summary>
+        /// <param name="filter">Condition for the test</param>
+        /// <returns>All tests that corresponds the condition</returns>
         public async Task<IEnumerable<TestDTO>> GetAsync(Func<TestDTO, bool> filter)
         {
             var tests = _mapper.Map<IEnumerable<Test>, IEnumerable<TestDTO>>(await _unitOfWork.TestRepository.GetAllAsync());
@@ -137,6 +170,12 @@ namespace KnowledgeTestingSystemBLL.Services
             return tests.Where(filter).ToList();
         }
 
+        /// <summary>
+        /// This method returns all information about the test based on its id
+        /// </summary>
+        /// <param name="id">Test id</param>
+        /// <returns>Test</returns>
+        /// <exception cref="Exception">There is no such test</exception>
         public async Task<TestDTO> GetByIdAsync(int id)
         {
             var dbTest = await _unitOfWork.TestRepository.GetByIdAsync(id);
@@ -154,6 +193,11 @@ namespace KnowledgeTestingSystemBLL.Services
             return test;
         }
 
+        /// <summary>
+        /// This method parses the test from TestDTO(BLL) to Test(DAL) and counts number of questions and options for each of them.
+        /// </summary>
+        /// <param name="test">Test to parse</param>
+        /// <returns>Parsed test</returns>
         private Test ParseTest(TestDTO test)
         {
             var testToCreate = _mapper.Map<TestDTO, Test>(test);

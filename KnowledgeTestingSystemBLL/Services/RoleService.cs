@@ -18,7 +18,13 @@ namespace KnowledgeTestingSystemBLL.Services
             _userManager = userManager;
             _roleManager = roleManager;
         }
-
+        /// <summary>
+        /// This method assigns array of roles to user
+        /// </summary>
+        /// <param name="assignUserToRoles">Model with user id and array of roles</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Model is null</exception>
+        /// <exception cref="Exception">List or errors(e.x: model is invalid, user not found)</exception>
         public async Task AssignUserToRoles(AssignUserToRoles assignUserToRoles)
         {
             if(assignUserToRoles == null) throw new ArgumentNullException(nameof(assignUserToRoles));
@@ -49,7 +55,12 @@ namespace KnowledgeTestingSystemBLL.Services
         {
             return await _roleManager.Roles.ToListAsync();
         }
-
+        /// <summary>
+        /// This method returns roles for user with given email
+        /// </summary>
+        /// <param name="email">User's email</param>
+        /// <returns>List of roles</returns>
+        /// <exception cref="Exception">User not found</exception>
         public async Task<IEnumerable<string>> GetRoles(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);

@@ -89,7 +89,7 @@ namespace KnowledgeTestingSystem.Controllers
             {
                 result = await _testService.CheckTestAsync(test);
                 if(User.Identity.IsAuthenticated)
-                    await _userService.AddUserProfileTest(result, User.FindFirst(ClaimTypes.Name)?.Value); // Passing result and user email
+                    await _userService.AddUserProfileTest(result, User.FindFirst(ClaimTypes.Name)?.Value); // Passing result and user email to add UserProfileTest to DB
             }
             catch(Exception ex)
             {

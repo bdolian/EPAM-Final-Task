@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace KnowledgeTestingSystemBLL.Entities
+﻿namespace KnowledgeTestingSystemBLL.Entities
 {
     public class Result
     {

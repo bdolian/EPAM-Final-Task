@@ -30,6 +30,13 @@ namespace KnowledgeTestingSystemBLL.Services
             _unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// This method checks logon model (email and password)
+        /// </summary>
+        /// <param name="logonUser">Model to logon</param>
+        /// <returns>User if info is correct, null otherwise</returns>
+        /// <exception cref="ArgumentNullException">Logon model is null</exception>
+        /// <exception cref="Exception">User not found or is deleted</exception>
         public async Task<ApplicationUser> Logon(Logon logonUser)
         {
             if(logonUser == null) throw new ArgumentNullException(nameof(logonUser));
@@ -43,6 +50,13 @@ namespace KnowledgeTestingSystemBLL.Services
             return await _userManager.CheckPasswordAsync(user, logonUser.Password) ? user : null;
         }
 
+        /// <summary>
+        /// This method registers a new user based on passed Registration model
+        /// </summary>
+        /// <param name="user">Registration model</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Registretion model is null</exception>
+        /// <exception cref="Exception">List of errors(e.x: email already taken or model is invalid)</exception>
         public async Task Register(Register user)
         {
             if (user is null) throw new ArgumentNullException(nameof(user));
@@ -63,6 +77,12 @@ namespace KnowledgeTestingSystemBLL.Services
             await _userService.CreateAsync(newUser);
         }
 
+        /// <summary>
+        /// This method deletes user from Administraton DB
+        /// </summary>
+        /// <param name="user">User to delete</param>
+        /// <returns>IdentityResult</returns>
+        /// <exception cref="ArgumentNullException">User is null</exception>
         public async Task<IdentityResult> DeleteUser(ApplicationUser user)
         {
             if (user is null) throw new ArgumentNullException(nameof(user));
