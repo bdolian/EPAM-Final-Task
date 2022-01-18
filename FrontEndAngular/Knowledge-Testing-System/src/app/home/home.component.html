@@ -2,7 +2,7 @@
     <div class="card w-75 m-3">
         <div class="card-body">
             <h5 class="card-title">{{test.name}}</h5>
-            <p class="card-text">Some test example</p>
+            <p class="card-text">Time to pass the test: {{test.timeToEnd}} minutes</p>
 
             <a (click)="onSelectTest(test)" class="btn btn-primary">Pass this test!</a>
             <div class="justify-content-end" *ngIf="isAdmin">

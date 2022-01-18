@@ -10,6 +10,7 @@ namespace KnowledgeTestingSystemBLL.Entities
         [Required(ErrorMessage = "Please enter last name")]
         public string LastName { get; set; }
         [Required(ErrorMessage = "Please enter email")]
+        [EmailAddress]
         public string Email { get; set; }
     }
 }
